@@ -1,6 +1,8 @@
 #ifndef URI_HPP
 #define URI_HPP
 
+#include <memory>
+
 namespace uri {
 
 class Uri {
@@ -14,6 +16,7 @@ public:
 
 private:
     struct Impl;
+    std::unique_ptr<struct Impl> impl_;
 };
 
 } // namespace uri
