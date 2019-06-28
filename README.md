@@ -2,7 +2,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-06-28 11:05:31
+ * @LastEditTime: 2019-06-28 11:18:03
  * @Description: A readme file of uriparser written by markdown.
  -->
 # uriparser
@@ -36,11 +36,8 @@ scheme     authority       path        query   fragment
 
 ### URI组件及其正则表达式
 
-```
-uri         = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
-```
+#### Scheme
 
-1. Scheme
 每个URI以一个Schema(格式)名称开始，它代表一个协议。
 
 ```
@@ -52,7 +49,8 @@ scheme      = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
 [A-Za-z][A-Za-z0-9+\-.]*
 ```
 
-2. Authority
+#### Authority
+
 用来描述一个命名的机构，通常是基于已注册的服务器地址, 还可以包含可选的端口和用户信息。
 ```
 authority   = [ userinfo "@" ] host [ ":" port ]
@@ -93,9 +91,9 @@ authority   = [ userinfo "@" ] host [ ":" port ]
 (?: : [0-9]* )?                                               # [ ":" port ]
 ```
 
-3. Path
-路径包含数据, 常常组织成层次格式, 它连同非层次化的查询(Query), 用于识别在该URI的格式和命名机构(如果有)范围内的一个资源；
-路径由第一个问号("?")或数字符号("#")字符或该URI的结尾来终止。
+#### Path
+
+路径包含数据, 常常组织成层次格式, 它连同非层次化的查询(Query), 用于识别在该URI的格式和命名机构(如果有)范围内的一个资源；路径由第一个问号("?")或数字符号("#")字符或该URI的结尾来终止。
 ```
 path          = path-abempty    ; begins with "/" or is empty
               / path-absolute   ; begins with "/" but not "//"
@@ -132,9 +130,9 @@ pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
 )                                                               # )
 ```
 
-4. Query
-查询包含非层次化的数据, 以及路径(Path), 用来从该URI的格式和命名机构(如果有)中识别一个资源；
-查询由第一个问号("?")字符指示并由一个数字符号("#")字符或该URI的结尾终止。
+#### Query
+
+查询包含非层次化的数据, 以及路径(Path), 用来从该URI的格式和命名机构(如果有)中识别一个资源；查询由第一个问号("?")字符指示并由一个数字符号("#")字符或该URI的结尾终止。
 ```
 query       = *( pchar / "/" / "?" )
 ```
@@ -143,9 +141,9 @@ query       = *( pchar / "/" / "?" )
 (?:[A-Za-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})*
 ```
 
-5. Fragment
-一个URI的片段标识符部件允许对一个主要资源引用的次要资源的非直接身份认证以及额外的识别信息；
-片段标识符部件是通过一个数字符号("#")字符的出现来指示的并由该URI的结尾来终止。
+#### Fragment
+
+一个URI的片段标识符部件允许对一个主要资源引用的次要资源的非直接身份认证以及额外的识别信息；片段标识符部件是通过一个数字符号("#")字符的出现来指示的并由该URI的结尾来终止。
 ```
 fragment    = *( pchar / "/" / "?" )
 ```
