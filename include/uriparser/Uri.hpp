@@ -3,13 +3,14 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-06-28 10:17:45
+ * @LastEditTime: 2019-06-28 16:52:40
  * @Description: A declaration of class uri::Uri.
  */
 #ifndef URIPARSER_URI_HPP
 #define URIPARSER_URI_HPP
 
 #include <memory>
+#include <string>
 
 namespace uri {
 
@@ -30,6 +31,18 @@ public:
     Uri(Uri &&) = delete;
     Uri &operator=(const Uri &) = delete;
     Uri &operator=(Uri &&) = delete;
+
+    // Public methods
+    bool parseFromString(const std::string &uriString); 
+    std::string getScheme();
+    std::string getAuthority();
+    // TODO: implement getHost method.
+    std::string getHost();
+    // TODO: implement getPort method.
+    std::string getPort();
+    std::string getPath();
+    std::string getQuery();
+    std::string getFragment();
 
 private:
     struct Impl;
