@@ -1,10 +1,11 @@
+// Copyright (c) 2019 shaqsnake. All rights reserved.
 /**
- * @file Uri.hpp
- * @brief A declaration of Class uri::Uri.
- * @author shaqsnake
- * @email shaqsnake@gmail.com
+ * @Author: shaqsnake
+ * @Email: shaqsnake@gmail.com
+ * @Date: 2019-06-27 09:17:12
+ * @LastEditTime: 2019-06-28 10:17:45
+ * @Description: A declaration of class uri::Uri.
  */
-
 #ifndef URIPARSER_URI_HPP
 #define URIPARSER_URI_HPP
 
