@@ -1,3 +1,10 @@
+<!--
+ * @Author: shaqsnake
+ * @Email: shaqsnake@gmail.com
+ * @Date: 2019-06-27 09:17:12
+ * @LastEditTime: 2019-06-28 11:05:31
+ * @Description: A readme file of uriparser written by markdown.
+ -->
 # uriparser
 
 uriparser是一个用C++实现的，符合[RFC3986](https://tools.ietf.org/html/rfc3986)标准的URI解析器。
@@ -27,12 +34,22 @@ scheme     authority       path        query   fragment
   urn:example:animal:ferret:nose
 ```
 
-### URI组件
+### URI组件及其正则表达式
+
+```
+uri         = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
+```
 
 1. Scheme
 每个URI以一个Schema(格式)名称开始，它代表一个协议。
+
 ```
 scheme      = ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
+```
+
+```
+# Regular Expression rule syntax:  scheme
+[A-Za-z][A-Za-z0-9+\-.]*
 ```
 
 2. Authority
@@ -43,6 +60,38 @@ authority   = [ userinfo "@" ] host [ ":" port ]
 - User Information: 用户信息包含一个用户名(可选)，用"@"符号和主机名分开。
 - Host: 主机名可以由一个封装在方括号内的IP文字, 一个点分十进制格式的IPv4地址, 或一个注册名称来标识。
 - Port: 端口号(可选)跟随在主机名后面，用单个的冒号 (":") 字符之后开始的十进制数字。
+
+```
+# Regular Expression rule syntax:  authority
+(?: (?:[A-Za-z0-9\-._~!$&'()*+,;=:]|%[0-9A-Fa-f]{2})* @)?     # [ userinfo "@" ]
+(?:                                                           # host
+  \[
+  (?:
+    (?:
+      (?:                                                    (?:[0-9A-Fa-f]{1,4}:){6}
+      |                                                   :: (?:[0-9A-Fa-f]{1,4}:){5}
+      | (?:                            [0-9A-Fa-f]{1,4})? :: (?:[0-9A-Fa-f]{1,4}:){4}
+      | (?: (?:[0-9A-Fa-f]{1,4}:){0,1} [0-9A-Fa-f]{1,4})? :: (?:[0-9A-Fa-f]{1,4}:){3}
+      | (?: (?:[0-9A-Fa-f]{1,4}:){0,2} [0-9A-Fa-f]{1,4})? :: (?:[0-9A-Fa-f]{1,4}:){2}
+      | (?: (?:[0-9A-Fa-f]{1,4}:){0,3} [0-9A-Fa-f]{1,4})? ::    [0-9A-Fa-f]{1,4}:
+      | (?: (?:[0-9A-Fa-f]{1,4}:){0,4} [0-9A-Fa-f]{1,4})? ::
+      ) (?:
+          [0-9A-Fa-f]{1,4} : [0-9A-Fa-f]{1,4}
+        | (?: (?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?) \.){3}
+              (?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)
+        )
+    |   (?: (?:[0-9A-Fa-f]{1,4}:){0,5} [0-9A-Fa-f]{1,4})? ::    [0-9A-Fa-f]{1,4}
+    |   (?: (?:[0-9A-Fa-f]{1,4}:){0,6} [0-9A-Fa-f]{1,4})? ::
+    )
+  | [Vv][0-9A-Fa-f]+\.[A-Za-z0-9\-._~!$&'()*+,;=:]+
+  )
+  \]
+| (?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}
+     (?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)
+| (?:[A-Za-z0-9\-._~!$&'()*+,;=]|%[0-9A-Fa-f]{2})*
+)
+(?: : [0-9]* )?                                               # [ ":" port ]
+```
 
 3. Path
 路径包含数据, 常常组织成层次格式, 它连同非层次化的查询(Query), 用于识别在该URI的格式和命名机构(如果有)范围内的一个资源；
@@ -67,12 +116,31 @@ segment-nz-nc = 1*( unreserved / pct-encoded / sub-delims / "@" )
 
 pchar         = unreserved / pct-encoded / sub-delims / ":" / "@"
 ```
+```
+# Regular Expression rule syntax: path
+(?:                                                             # (
+    (?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*  #   path-abempty
+| /                                                             # / path-absolute
+  (?:    (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})+
+    (?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*
+  )?
+|        (?:[A-Za-z0-9\-._~!$&'()*+,;=@] |%[0-9A-Fa-f]{2})+     # / path-noscheme
+    (?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*
+|        (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})+     # / path-rootless
+    (?:/ (?:[A-Za-z0-9\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*
+|                                                               # / path-empty
+)                                                               # )
+```
 
 4. Query
 查询包含非层次化的数据, 以及路径(Path), 用来从该URI的格式和命名机构(如果有)中识别一个资源；
 查询由第一个问号("?")字符指示并由一个数字符号("#")字符或该URI的结尾终止。
 ```
 query       = *( pchar / "/" / "?" )
+```
+```
+# Regular Expression rule syntax: query
+(?:[A-Za-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})*
 ```
 
 5. Fragment
@@ -81,7 +149,13 @@ query       = *( pchar / "/" / "?" )
 ```
 fragment    = *( pchar / "/" / "?" )
 ```
+```
+# Regular Expression rule syntax: fragment
+(?:[A-Za-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})*
+```
 
-## 相关资料
+## 参考资料
 1. [RFC3986](https://tools.ietf.org/html/rfc3986)
 2. [RFC3986 中文翻译](http://wiki.jabbercn.org/RFC3986#.E6.A0.BC.E5.BC.8F)
+3. [StackOverflow 关于URI正则的问答](https://stackoverflow.com/questions/30847/regex-to-validate-uris)
+4. [Regular Expression URI Validation](http://jmrware.com/articles/2009/uri_regexp/URI_regex.html)
