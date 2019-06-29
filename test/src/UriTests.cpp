@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-06-28 16:50:53
+ * @LastEditTime: 2019-06-29 12:17:23
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -55,4 +55,60 @@ TEST(UriTests, ParseFromIPv6Addr) {
     ASSERT_EQ("/c=GB", uri.getPath());
     ASSERT_EQ("objectClass?one", uri.getQuery());
     ASSERT_EQ("", uri.getFragment());
+}
+
+TEST(UriTests, ParseFromGeneralUriStrings) {
+    struct Tests {
+        std::string uriString;
+        std::string authority;
+        std::string path;
+    };
+
+    std::vector<Tests> testCases{
+        {
+            "ftp://ftp.is.co.za/rfc/rfc1808.txt",
+            "ftp.is.co.za",
+            "/rfc/rfc1808.txt",
+        },
+        {
+            "http://www.ietf.org/rfc/rfc2396.txt",
+            "www.ietf.org",
+            "/rfc/rfc2396.txt",
+        },
+        {
+            "ldap://[2001:db8::7]/c=GB?objectClass?one",
+            "[2001:db8::7]",
+            "",
+        },
+        {
+            "mailto:John.Doe@example.com",
+            "",
+            "John.Doe@example.com",
+        },
+        {
+            "news:comp.infosystems.www.servers.unix",
+            "",
+            "comp.infosystems.www.servers.unix",
+        },
+        {
+            "tel:+1-816-555-1212",
+            "",
+            "+1-816-555-1212",
+        },
+        {
+            "telnet://192.0.2.16:80/",
+            "192.0.2.16:80",
+            "/",
+        },
+        {"urn:oasis:names:specification:docbook:dtd:xml:4.1.2", "",
+         "oasis:names:specification:docbook:dtd:xml:4.1.2"},
+    };
+
+    std::size_t idx = 0;
+    for (const auto &testCase : testCases) {
+        uri::Uri uri;
+        ASSERT_TRUE(uri.parseFromString(testCase.uriString)) << idx;
+        ASSERT_EQ(testCase.authority, uri.getAuthority()) << idx;
+        ++idx;
+    }
 }

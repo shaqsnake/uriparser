@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-06-28 16:55:45
+ * @LastEditTime: 2019-06-29 12:16:11
  * @Description: An implementation of class uri::Uri.
  */
 #include <iostream>
@@ -38,15 +38,6 @@ Uri::Uri() : impl_(new Impl) {}
  */
 Uri::~Uri() = default;
 
-/**
- * @description:
- *     Parse URI formatted string, extract the elements and store them into uri
- *     object.
- * @param[in] uriString:
- *     An URI string should be parsed by RFC3986 defination.
- * @return:
- *     An indication of whether or not the uriString was parsed successfully.
- */
 bool Uri::parseFromString(const std::string &uriString) {
     std::regex r(URI_PATTERN);
     std::smatch m;
@@ -65,44 +56,14 @@ bool Uri::parseFromString(const std::string &uriString) {
     return false;
 }
 
-/**
- * @description:
- *     Get the scheme of URI which is defined in RFC3986.
- * @return: 
- *     A scheme string.
- */
-std::string Uri::getScheme() { return impl_->scheme; }
+std::string &Uri::getScheme() const { return impl_->scheme; }
 
-/**
- * @description:
- *     Get the authority of URI which is defined in RFC3986.
- * @return: 
- *     A authority string.
- */
-std::string Uri::getAuthority() { return impl_->authority; }
+std::string &Uri::getAuthority() const { return impl_->authority; }
 
-/**
- * @description:
- *     Get the path of URI which is defined in RFC3986.
- * @return: 
- *     A path string.
- */
-std::string Uri::getPath() { return impl_->path; }
+std::string &Uri::getPath() const { return impl_->path; }
 
-/**
- * @description:
- *     Get the query of URI which is defined in RFC3986.
- * @return: 
- *     A query string.
- */
-std::string Uri::getQuery() { return impl_->query; }
+std::string &Uri::getQuery() const { return impl_->query; }
 
-/**
- * @description:
- *     Get the fragment of URI which is defined in RFC3986.
- * @return: 
- *     A fragment string.
- */
-std::string Uri::getFragment() { return impl_->fragment; }
+std::string &Uri::getFragment() const { return impl_->fragment; }
 
 } // namespace uri
