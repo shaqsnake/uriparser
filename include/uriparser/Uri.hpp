@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-06-29 12:16:15
+ * @LastEditTime: 2019-07-02 17:00:17
  * @Description: A declaration of class uri::Uri.
  */
 #ifndef URIPARSER_URI_HPP
@@ -61,9 +61,9 @@ public:
      */
     std::string &getAuthority() const;
     // TODO: implement getHost method.
-    std::string &getHost() const;
+    std::string getHost() const;
     // TODO: implement getPort method.
-    std::string &getPort() const;
+    int getPort() const;
 
     /**
      * @description:
@@ -92,6 +92,10 @@ public:
 private:
     struct Impl;
     std::unique_ptr<struct Impl> impl_;
+
+    // Private methods
+    std::string parseHostFromAuth(std::string authorityString);
+    int parsePortFromAuth(std::string authorityString);
 };
 
 } // namespace uri
