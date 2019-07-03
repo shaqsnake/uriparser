@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-02 17:11:43
+ * @LastEditTime: 2019-07-03 14:03:16
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -48,27 +48,27 @@ TEST(UriTests, ParseFromNestedUri) {
     ASSERT_EQ("", uri.getFragment());
 }
 
-// TEST(UriTests, ParseFromIPv6Addr) {
-//     uri::Uri uri;
-//     ASSERT_TRUE(
-//         uri.parseFromString("ldap://[2001:db8::7]/c=GB?objectClass?one"));
-//     ASSERT_EQ("ldap", uri.getScheme());
-//     ASSERT_EQ("[2001:db8::7]", uri.getAuthority());
-//     ASSERT_EQ("2001:db8::7", uri.getHost());
-//     ASSERT_EQ(-1, uri.getPort());
-//     ASSERT_EQ("/c=GB", uri.getPath());
-//     ASSERT_EQ("objectClass?one", uri.getQuery());
-//     ASSERT_EQ("", uri.getFragment());
-// }
+TEST(UriTests, ParseFromIPv6Addr) {
+    uri::Uri uri;
+    ASSERT_TRUE(
+        uri.parseFromString("ldap://[2001:db8::7]/c=GB?objectClass?one"));
+    ASSERT_EQ("ldap", uri.getScheme());
+    ASSERT_EQ("[2001:db8::7]", uri.getAuthority());
+    ASSERT_EQ("[2001:db8::7]", uri.getHost());
+    ASSERT_EQ(-1, uri.getPort());
+    ASSERT_EQ("/c=GB", uri.getPath());
+    ASSERT_EQ("objectClass?one", uri.getQuery());
+    ASSERT_EQ("", uri.getFragment());
+}
 
 TEST(UriTests, ParseFromGeneralUriStrings) {
-    struct Tests {
+    struct TestCase {
         std::string uriString;
         std::string authority;
         std::string path;
     };
 
-    std::vector<Tests> testCases{
+    std::vector<TestCase> testCases{
         {
             "ftp://ftp.is.co.za/rfc/rfc1808.txt",
             "ftp.is.co.za",

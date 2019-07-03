@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-02 17:00:17
+ * @LastEditTime: 2019-07-03 14:11:30
  * @Description: A declaration of class uri::Uri.
  */
 #ifndef URIPARSER_URI_HPP
@@ -60,9 +60,21 @@ public:
      *     A authority string.
      */
     std::string &getAuthority() const;
-    // TODO: implement getHost method.
+
+    /**
+     * @description:
+     *     Get the host address of URI which is defined in RFC3986.
+     * @return: 
+     *     A host string.
+     */
     std::string getHost() const;
-    // TODO: implement getPort method.
+    
+    /**
+     * @description:
+     *     Get the port number of URI which is defined in RFC3986.
+     * @return: 
+     *     A port number which should be from 1 to 65,535.
+     */
     int getPort() const;
 
     /**
@@ -94,8 +106,13 @@ private:
     std::unique_ptr<struct Impl> impl_;
 
     // Private methods
-    std::string parseHostFromAuth(std::string authorityString);
-    int parsePortFromAuth(std::string authorityString);
+    /**
+     * @description:
+     *     Parse the authority component;
+     *     Split it into userinfo, host and port;
+     *     Store thems into class members accordingly.
+     */
+    void parseAuthority();
 };
 
 } // namespace uri

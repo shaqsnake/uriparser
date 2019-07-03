@@ -3,18 +3,15 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-02 17:05:52
+ * @LastEditTime: 2019-07-03 14:02:19
  * @Description: An implementation of class uri::Uri.
  */
 #include <iostream>
 #include <regex>
 #include <uriparser/Uri.hpp>
+#include <uriparser/UriPattern.hpp>
 
 namespace uri {
-
-// TODO: extract this const variable to a class?
-const std::string URI_PATTERN =
-    "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
 
 /**
  * The concrete implemetation of Uri class.
@@ -23,8 +20,9 @@ struct Uri::Impl {
     std::string scheme;
     // std::string delimiter;
     std::string authority;
+    std::string userinfo;
     std::string host;
-    int port;
+    int port = -1;
     std::string path;
     std::string query;
     std::string fragment;
@@ -41,7 +39,7 @@ Uri::Uri() : impl_(new Impl) {}
 Uri::~Uri() = default;
 
 bool Uri::parseFromString(const std::string &uriString) {
-    std::regex r(URI_PATTERN);
+    std::regex r(uri::UriPattern);
     std::smatch m;
     regex_match(uriString, m, r);
 
@@ -49,12 +47,7 @@ bool Uri::parseFromString(const std::string &uriString) {
     if (!m.empty()) {
         impl_->scheme = m[2].str();
         impl_->authority = m[4].str();
-        impl_->host = "";
-        impl_->port = -1;
-        if (impl_->authority.size()) {
-            impl_->host = parseHostFromAuth(impl_->authority);
-            impl_->port = parsePortFromAuth(impl_->authority);
-        }
+        parseAuthority();
         impl_->path = m[5].str();
         impl_->query = m[7].str();
         impl_->fragment = m[9].str();
@@ -64,22 +57,24 @@ bool Uri::parseFromString(const std::string &uriString) {
     return false;
 }
 
-std::string Uri::parseHostFromAuth(std::string authorityString) {
-    auto hostEnd = authorityString.rfind(':');
-    if (hostEnd != std::string::npos)
-        authorityString = authorityString.substr(0, hostEnd);
-    auto hostStart = authorityString.find('@');
-    if (hostStart != std::string::npos)
-        authorityString = authorityString.substr(hostStart+1);
-    return authorityString;
-}
+void Uri::parseAuthority() {
+    if (impl_->authority.size()) {
+        std::regex r(uri::AuthorityPatten);
+        std::smatch m;
+        regex_match(impl_->authority, m, r);
 
-int Uri::parsePortFromAuth(std::string authorityString) {
-    int port = -1;
-    auto portStart = authorityString.rfind(':');
-    if (portStart != std::string::npos)
-        port = std::stoi(authorityString.substr(portStart+1));
-    return port;
+        // DEBUG code
+        // std::cout << uri::AuthorityPatten << std::endl;
+        // std::cout << impl_->authority << std::endl;       
+        // std::cout << m[1] << " " << m[2] << " " << m[3] << std::endl;
+        if (m.size()) {
+            impl_->userinfo = m[1].str();
+            impl_->host = m[2].str();
+            if (m[3].str().size())
+                impl_->port = std::stoi(m[3].str());
+        }
+    }
+    
 }
 
 std::string &Uri::getScheme() const { return impl_->scheme; }
