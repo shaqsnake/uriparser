@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(Headers
     include/uriparser/Uri.hpp
+    src/UriPattern.hpp
 )
 
 set (Sources

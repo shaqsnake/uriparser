@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-07-03 10:26:50
- * @LastEditTime: 2019-07-03 14:34:46
+ * @LastEditTime: 2019-07-04 11:46:20
  * @Description: A header to present uri pattern.
  */
 #ifndef URIPARSER_URIPATTERN_HPP
