@@ -3,13 +3,30 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-04 14:28:19
+ * @LastEditTime: 2019-07-05 11:17:24
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
 #include <iostream>
 #include <regex>
 #include <uriparser/Uri.hpp>
+
+namespace {
+    /**
+     * @description:
+     *     Check the format of input string is vaild or not.
+     * @param[in] str
+     *     A input string to be checked.
+     * @param[in] pattern
+     *     A valid pattern to check. 
+     * @return: 
+     *     An indication of whether or not the input string is valid.
+     */
+    bool isValid(std::string str, std::string pattern) {
+        std::regex r(pattern);
+        return std::regex_match(str, r);
+    }
+}
 
 namespace uri {
 
@@ -56,7 +73,10 @@ bool Uri::parseFromString(const std::string &uriString) {
 
     // TODO: refactor the match procedure.
     if (!m.empty()) {
-        impl_->scheme = m[2].str();
+        impl_->scheme = m[2].str(); // schema
+        if (!isValid(impl_->scheme, uri::SchemePattern))
+            return false;
+
         impl_->authority = m[4].str();
         parseAuthority();
         impl_->path = m[5].str();

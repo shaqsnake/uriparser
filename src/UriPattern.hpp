@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-07-03 10:26:50
- * @LastEditTime: 2019-07-04 11:46:20
+ * @LastEditTime: 2019-07-05 10:35:19
  * @Description: A header to present uri pattern.
  */
 #ifndef URIPARSER_URIPATTERN_HPP
@@ -15,6 +15,8 @@ namespace uri {
 
 static const std::string UriPattern =
     "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
+
+static const std::string SchemePattern = "[A-Za-z][A-Za-z0-9+\\-.]*";
 
 static const std::string UserInfoPattern = "((?:[A-Za-z0-9\\-._~!$&'()*+,;=:]|"
                                            "%[0-9A-Fa-f]{2})*)";
