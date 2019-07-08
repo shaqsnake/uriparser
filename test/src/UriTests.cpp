@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-08 11:27:07
+ * @LastEditTime: 2019-07-08 12:07:53
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -205,12 +205,34 @@ TEST(UriTests, PaserFromUriWithBarelyValidAuthority) {
         {"foo://bar_@example.com:80", "bar_@example.com:80", "bar_", "example.com", 80},
         {"foo://bar~@example.com:80", "bar~@example.com:80", "bar~", "example.com", 80},
         {"foo://bar0@example.com:80", "bar0@example.com:80", "bar0", "example.com", 80},
+        {"foo://bar!@example.com:80", "bar!@example.com:80", "bar!", "example.com", 80},
+        {"foo://bar$@example.com:80", "bar$@example.com:80", "bar$", "example.com", 80},
+        {"foo://bar&@example.com:80", "bar&@example.com:80", "bar&", "example.com", 80},
+        {"foo://bar'@example.com:80", "bar'@example.com:80", "bar'", "example.com", 80},
+        {"foo://bar(@example.com:80", "bar(@example.com:80", "bar(", "example.com", 80},
+        {"foo://bar)@example.com:80", "bar)@example.com:80", "bar)", "example.com", 80},
+        {"foo://bar*@example.com:80", "bar*@example.com:80", "bar*", "example.com", 80},
+        {"foo://bar+@example.com:80", "bar+@example.com:80", "bar+", "example.com", 80},
+        {"foo://bar,@example.com:80", "bar,@example.com:80", "bar,", "example.com", 80},
+        {"foo://bar;@example.com:80", "bar;@example.com:80", "bar;", "example.com", 80},
+        {"foo://bar=@example.com:80", "bar=@example.com:80", "bar=", "example.com", 80},
         // Tesecase of host
         {"foo://bar@example-com:80", "bar@example-com:80", "bar", "example-com", 80},
         {"foo://bar@example.com:80", "bar@example.com:80", "bar", "example.com", 80},
         {"foo://bar@example_com:80", "bar@example_com:80", "bar", "example_com", 80},
         {"foo://bar@example~com:80", "bar@example~com:80", "bar", "example~com", 80},
         {"foo://bar@example0com:80", "bar@example0com:80", "bar", "example0com", 80},
+        {"foo://bar@example!com:80", "bar@example!com:80", "bar", "example!com", 80},
+        {"foo://bar@example$com:80", "bar@example$com:80", "bar", "example$com", 80},
+        {"foo://bar@example&com:80", "bar@example&com:80", "bar", "example&com", 80},
+        {"foo://bar@example'com:80", "bar@example'com:80", "bar", "example'com", 80},
+        {"foo://bar@example(com:80", "bar@example(com:80", "bar", "example(com", 80},
+        {"foo://bar@example)com:80", "bar@example)com:80", "bar", "example)com", 80},
+        {"foo://bar@example*com:80", "bar@example*com:80", "bar", "example*com", 80},
+        {"foo://bar@example+com:80", "bar@example+com:80", "bar", "example+com", 80},
+        {"foo://bar@example,com:80", "bar@example,com:80", "bar", "example,com", 80},
+        {"foo://bar@example;com:80", "bar@example;com:80", "bar", "example;com", 80},
+        {"foo://bar@example=com:80", "bar@example=com:80", "bar", "example=com", 80},
         // Testcase of port
         {"foo://bar@example.com:0", "bar@example.com:0", "bar", "example.com", 0},
         {"foo://bar@example.com:65535", "bar@example.com:65535", "bar", "example.com", 65535},
