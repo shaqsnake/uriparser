@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-05 11:08:22
+ * @LastEditTime: 2019-07-08 11:27:07
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -161,4 +161,74 @@ TEST(UriTests, PaserFromUriWithBarelyValidScheme) {
         ++idx;
     }
 }
+
+TEST(UriTests, ParseFromUriWithInvalidAuthority) {
+    std::vector<std::string> uriStrings{
+        // Testcase of userinfo
+        "foo://bar[@example.com",
+        "foo://bar]@example.com",
+        "foo://bar@@example.com",
+        // Tesecase of host
+        "foo://bar@example:com",
+        "foo://bar@example[com",
+        "foo://bar@example]com",
+        "foo://bar@example@com",
+        // Testcase of port
+        "foo://bar@example.com:-2",
+        "foo://bar@example.com:65536",
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (const auto &uriString : uriStrings) {
+        ASSERT_FALSE(uri.parseFromString(uriString))
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
+}
+
+TEST(UriTests, PaserFromUriWithBarelyValidAuthority) {
+    struct TestCase {
+        std::string uriString;
+        std::string authority;
+        std::string userinfo;
+        std::string host;
+        int port;
+    };
+
+    std::vector<TestCase> testCases{
+        // Testcase of userinfo
+        {"foo://bar@example.com:80", "bar@example.com:80", "bar", "example.com", 80},
+        {"foo://bar:@example.com:80", "bar:@example.com:80", "bar:", "example.com", 80},
+        {"foo://bar-@example.com:80", "bar-@example.com:80", "bar-", "example.com", 80},
+        {"foo://bar.@example.com:80", "bar.@example.com:80", "bar.", "example.com", 80},
+        {"foo://bar_@example.com:80", "bar_@example.com:80", "bar_", "example.com", 80},
+        {"foo://bar~@example.com:80", "bar~@example.com:80", "bar~", "example.com", 80},
+        {"foo://bar0@example.com:80", "bar0@example.com:80", "bar0", "example.com", 80},
+        // Tesecase of host
+        {"foo://bar@example-com:80", "bar@example-com:80", "bar", "example-com", 80},
+        {"foo://bar@example.com:80", "bar@example.com:80", "bar", "example.com", 80},
+        {"foo://bar@example_com:80", "bar@example_com:80", "bar", "example_com", 80},
+        {"foo://bar@example~com:80", "bar@example~com:80", "bar", "example~com", 80},
+        {"foo://bar@example0com:80", "bar@example0com:80", "bar", "example0com", 80},
+        // Testcase of port
+        {"foo://bar@example.com:0", "bar@example.com:0", "bar", "example.com", 0},
+        {"foo://bar@example.com:65535", "bar@example.com:65535", "bar", "example.com", 65535},
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (const auto &testCase : testCases) {
+        ASSERT_TRUE(uri.parseFromString(testCase.uriString))
+            << ">>> Test is failed at " << idx << ". <<<";
+        ASSERT_EQ(testCase.authority, uri.getAuthority())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ASSERT_EQ(testCase.userinfo, uri.getUserinfo())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ASSERT_EQ(testCase.host, uri.getHost())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ASSERT_EQ(testCase.port, uri.getPort())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
 }

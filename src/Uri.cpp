@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-05 11:17:24
+ * @LastEditTime: 2019-07-08 11:21:09
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -12,21 +12,23 @@
 #include <uriparser/Uri.hpp>
 
 namespace {
-    /**
-     * @description:
-     *     Check the format of input string is vaild or not.
-     * @param[in] str
-     *     A input string to be checked.
-     * @param[in] pattern
-     *     A valid pattern to check. 
-     * @return: 
-     *     An indication of whether or not the input string is valid.
-     */
-    bool isValid(std::string str, std::string pattern) {
-        std::regex r(pattern);
-        return std::regex_match(str, r);
-    }
+/**
+ * @description:
+ *     Check the format of input string is vaild or not.
+ * @param[in] str
+ *     A input string to be checked.
+ * @param[in] pattern
+ *     A valid pattern to check.
+ * @return:
+ *     An indication of whether or not the given string
+ *     was valid is returned.
+ */
+bool isValid(std::string str, std::string pattern) {
+    std::regex r(pattern);
+    return std::regex_match(str, r);
 }
+
+} // namespace
 
 namespace uri {
 
@@ -78,7 +80,12 @@ bool Uri::parseFromString(const std::string &uriString) {
             return false;
 
         impl_->authority = m[4].str();
+        if (!isValid(impl_->authority, uri::AuthorityPatten))
+            return false;
         parseAuthority();
+        // The tcp port are 16bit digits.
+        if (impl_->port >= (1<<16))
+            return false;
         impl_->path = m[5].str();
         impl_->query = m[7].str();
         impl_->fragment = m[9].str();
@@ -103,6 +110,14 @@ std::string &Uri::getScheme() const { return impl_->scheme; }
  *     A authority string.
  */
 std::string &Uri::getAuthority() const { return impl_->authority; }
+
+/**
+ * @description:
+ *     Get the userinfo of URI which is defined in RFC3986.
+ * @return:
+ *      A userinfo string.
+ */
+std::string &Uri::getUserinfo() const { return impl_->userinfo; }
 
 /**
  * @description:
@@ -157,7 +172,7 @@ void Uri::parseAuthority() {
         std::smatch m;
         regex_match(impl_->authority, m, r);
 
-        // DEBUG code
+        /* DEBUG code */
         // std::cout << uri::AuthorityPatten << std::endl;
         // std::cout << impl_->authority << std::endl;
         // std::cout << m[1] << " " << m[2] << " " << m[3] << std::endl;
@@ -169,4 +184,5 @@ void Uri::parseAuthority() {
         }
     }
 }
+
 } // namespace uri
