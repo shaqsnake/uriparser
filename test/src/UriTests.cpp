@@ -120,61 +120,45 @@ TEST(UriTests, ParseFromGeneralUriStrings) {
 TEST(UriTests, ParseFromUriWithInvalidScheme) {
 
     std::vector<std::string> uriStrings{
-        "123://example.com",
-        "0foo://example.com",
-        "+foo://example.com",
-        "foo!://example.com",
-        "foo$://example.com",
-        "foo&://example.com",
-        "foo'://example.com",
-        "foo(://example.com",
-        "foo)://example.com",
-        "foo*://example.com",
-        "foo,://example.com",
-        "foo;://example.com",
-        "foo=://example.com",
-        "foo?://example.com",
-        "foo#://example.com",
-        "foo[://example.com",
-        "foo]://example.com",
-        "foo@://example.com",
-        "foo_://example.com",
-        "foo~://example.com",
+        "123://example.com",  "0foo://example.com", "+foo://example.com",
+        "foo!://example.com", "foo$://example.com", "foo&://example.com",
+        "foo'://example.com", "foo(://example.com", "foo)://example.com",
+        "foo*://example.com", "foo,://example.com", "foo;://example.com",
+        "foo=://example.com", "foo?://example.com", "foo#://example.com",
+        "foo[://example.com", "foo]://example.com", "foo@://example.com",
+        "foo_://example.com", "foo~://example.com",
         // In this case , the scheme is "foo", so it's legal,
         // but the authority, "://example.com", is ilegal.
-        // "foo:://example.com", 
+        // "foo:://example.com",
     };
 
     size_t idx = 0;
     uri::Uri uri;
-    for (const auto &uriString: uriStrings) {
+    for (const auto &uriString : uriStrings) {
         ASSERT_FALSE(uri.parseFromString(uriString)) << idx;
         ++idx;
     }
 }
 
-TEST(UriTests, PaserFromUriWithBarelyValid) {
+TEST(UriTests, PaserFromUriWithBarelyValidScheme) {
     struct TestCase {
         std::string uriString;
         std::string scheme;
     };
 
-    std::vector<TestCase> testCases {
-        {"foo0://example.com", "foo0"},
-        {"foo+://example.com", "foo+"},
-        {"foo-://example.com", "foo-"},
-        {"foo.://example.com", "foo."},
-        {"f0o://example.com", "f0o"},
-        {"f+o://example.com", "f+o"},
-        {"f-o://example.com", "f-o"},
-        {"f.o://example.com", "f.o"},
+    std::vector<TestCase> testCases{
+        {"foo0://example.com", "foo0"}, {"foo+://example.com", "foo+"},
+        {"foo-://example.com", "foo-"}, {"foo.://example.com", "foo."},
+        {"f0o://example.com", "f0o"},   {"f+o://example.com", "f+o"},
+        {"f-o://example.com", "f-o"},   {"f.o://example.com", "f.o"},
     };
 
     size_t idx = 0;
     uri::Uri uri;
-    for (const auto &testCase: testCases) {
+    for (const auto &testCase : testCases) {
         ASSERT_TRUE(uri.parseFromString(testCase.uriString)) << idx;
         ASSERT_EQ(testCase.scheme, uri.getScheme()) << idx;
         ++idx;
     }
+}
 }
