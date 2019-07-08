@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-04 14:27:51
+ * @LastEditTime: 2019-07-08 10:18:02
  * @Description: A declaration of class uri::Uri.
  */
 #ifndef URIPARSER_URI_HPP
@@ -35,6 +35,7 @@ public:
     bool parseFromString(const std::string &uriString);
     std::string &getScheme() const;
     std::string &getAuthority() const;
+    std::string &getUserinfo() const;
     std::string &getHost() const;
     int &getPort() const;
     std::string &getPath() const;
