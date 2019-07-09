@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-08 12:07:53
+ * @LastEditTime: 2019-07-09 16:16:32
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -198,44 +198,80 @@ TEST(UriTests, PaserFromUriWithBarelyValidAuthority) {
 
     std::vector<TestCase> testCases{
         // Testcase of userinfo
-        {"foo://bar@example.com:80", "bar@example.com:80", "bar", "example.com", 80},
-        {"foo://bar:@example.com:80", "bar:@example.com:80", "bar:", "example.com", 80},
-        {"foo://bar-@example.com:80", "bar-@example.com:80", "bar-", "example.com", 80},
-        {"foo://bar.@example.com:80", "bar.@example.com:80", "bar.", "example.com", 80},
-        {"foo://bar_@example.com:80", "bar_@example.com:80", "bar_", "example.com", 80},
-        {"foo://bar~@example.com:80", "bar~@example.com:80", "bar~", "example.com", 80},
-        {"foo://bar0@example.com:80", "bar0@example.com:80", "bar0", "example.com", 80},
-        {"foo://bar!@example.com:80", "bar!@example.com:80", "bar!", "example.com", 80},
-        {"foo://bar$@example.com:80", "bar$@example.com:80", "bar$", "example.com", 80},
-        {"foo://bar&@example.com:80", "bar&@example.com:80", "bar&", "example.com", 80},
-        {"foo://bar'@example.com:80", "bar'@example.com:80", "bar'", "example.com", 80},
-        {"foo://bar(@example.com:80", "bar(@example.com:80", "bar(", "example.com", 80},
-        {"foo://bar)@example.com:80", "bar)@example.com:80", "bar)", "example.com", 80},
-        {"foo://bar*@example.com:80", "bar*@example.com:80", "bar*", "example.com", 80},
-        {"foo://bar+@example.com:80", "bar+@example.com:80", "bar+", "example.com", 80},
-        {"foo://bar,@example.com:80", "bar,@example.com:80", "bar,", "example.com", 80},
-        {"foo://bar;@example.com:80", "bar;@example.com:80", "bar;", "example.com", 80},
-        {"foo://bar=@example.com:80", "bar=@example.com:80", "bar=", "example.com", 80},
+        {"foo://bar@example.com:80", "bar@example.com:80", "bar", "example.com",
+         80},
+        {"foo://bar:@example.com:80", "bar:@example.com:80",
+         "bar:", "example.com", 80},
+        {"foo://bar-@example.com:80", "bar-@example.com:80", "bar-",
+         "example.com", 80},
+        {"foo://bar.@example.com:80", "bar.@example.com:80", "bar.",
+         "example.com", 80},
+        {"foo://bar_@example.com:80", "bar_@example.com:80", "bar_",
+         "example.com", 80},
+        {"foo://bar~@example.com:80", "bar~@example.com:80", "bar~",
+         "example.com", 80},
+        {"foo://bar0@example.com:80", "bar0@example.com:80", "bar0",
+         "example.com", 80},
+        {"foo://bar!@example.com:80", "bar!@example.com:80", "bar!",
+         "example.com", 80},
+        {"foo://bar$@example.com:80", "bar$@example.com:80", "bar$",
+         "example.com", 80},
+        {"foo://bar&@example.com:80", "bar&@example.com:80", "bar&",
+         "example.com", 80},
+        {"foo://bar'@example.com:80", "bar'@example.com:80", "bar'",
+         "example.com", 80},
+        {"foo://bar(@example.com:80", "bar(@example.com:80", "bar(",
+         "example.com", 80},
+        {"foo://bar)@example.com:80", "bar)@example.com:80", "bar)",
+         "example.com", 80},
+        {"foo://bar*@example.com:80", "bar*@example.com:80", "bar*",
+         "example.com", 80},
+        {"foo://bar+@example.com:80", "bar+@example.com:80", "bar+",
+         "example.com", 80},
+        {"foo://bar,@example.com:80", "bar,@example.com:80", "bar,",
+         "example.com", 80},
+        {"foo://bar;@example.com:80", "bar;@example.com:80", "bar;",
+         "example.com", 80},
+        {"foo://bar=@example.com:80", "bar=@example.com:80",
+         "bar=", "example.com", 80},
         // Tesecase of host
-        {"foo://bar@example-com:80", "bar@example-com:80", "bar", "example-com", 80},
-        {"foo://bar@example.com:80", "bar@example.com:80", "bar", "example.com", 80},
-        {"foo://bar@example_com:80", "bar@example_com:80", "bar", "example_com", 80},
-        {"foo://bar@example~com:80", "bar@example~com:80", "bar", "example~com", 80},
-        {"foo://bar@example0com:80", "bar@example0com:80", "bar", "example0com", 80},
-        {"foo://bar@example!com:80", "bar@example!com:80", "bar", "example!com", 80},
-        {"foo://bar@example$com:80", "bar@example$com:80", "bar", "example$com", 80},
-        {"foo://bar@example&com:80", "bar@example&com:80", "bar", "example&com", 80},
-        {"foo://bar@example'com:80", "bar@example'com:80", "bar", "example'com", 80},
-        {"foo://bar@example(com:80", "bar@example(com:80", "bar", "example(com", 80},
-        {"foo://bar@example)com:80", "bar@example)com:80", "bar", "example)com", 80},
-        {"foo://bar@example*com:80", "bar@example*com:80", "bar", "example*com", 80},
-        {"foo://bar@example+com:80", "bar@example+com:80", "bar", "example+com", 80},
-        {"foo://bar@example,com:80", "bar@example,com:80", "bar", "example,com", 80},
-        {"foo://bar@example;com:80", "bar@example;com:80", "bar", "example;com", 80},
-        {"foo://bar@example=com:80", "bar@example=com:80", "bar", "example=com", 80},
+        {"foo://bar@example-com:80", "bar@example-com:80", "bar", "example-com",
+         80},
+        {"foo://bar@example.com:80", "bar@example.com:80", "bar", "example.com",
+         80},
+        {"foo://bar@example_com:80", "bar@example_com:80", "bar", "example_com",
+         80},
+        {"foo://bar@example~com:80", "bar@example~com:80", "bar", "example~com",
+         80},
+        {"foo://bar@example0com:80", "bar@example0com:80", "bar", "example0com",
+         80},
+        {"foo://bar@example!com:80", "bar@example!com:80", "bar", "example!com",
+         80},
+        {"foo://bar@example$com:80", "bar@example$com:80", "bar", "example$com",
+         80},
+        {"foo://bar@example&com:80", "bar@example&com:80", "bar", "example&com",
+         80},
+        {"foo://bar@example'com:80", "bar@example'com:80", "bar", "example'com",
+         80},
+        {"foo://bar@example(com:80", "bar@example(com:80", "bar", "example(com",
+         80},
+        {"foo://bar@example)com:80", "bar@example)com:80", "bar", "example)com",
+         80},
+        {"foo://bar@example*com:80", "bar@example*com:80", "bar", "example*com",
+         80},
+        {"foo://bar@example+com:80", "bar@example+com:80", "bar", "example+com",
+         80},
+        {"foo://bar@example,com:80", "bar@example,com:80", "bar", "example,com",
+         80},
+        {"foo://bar@example;com:80", "bar@example;com:80", "bar", "example;com",
+         80},
+        {"foo://bar@example=com:80", "bar@example=com:80", "bar", "example=com",
+         80},
         // Testcase of port
-        {"foo://bar@example.com:0", "bar@example.com:0", "bar", "example.com", 0},
-        {"foo://bar@example.com:65535", "bar@example.com:65535", "bar", "example.com", 65535},
+        {"foo://bar@example.com:0", "bar@example.com:0", "bar", "example.com",
+         0},
+        {"foo://bar@example.com:65535", "bar@example.com:65535", "bar",
+         "example.com", 65535},
     };
 
     size_t idx = 0;
@@ -250,6 +286,59 @@ TEST(UriTests, PaserFromUriWithBarelyValidAuthority) {
         ASSERT_EQ(testCase.host, uri.getHost())
             << ">>> Test is failed at " << idx << ". <<<";
         ASSERT_EQ(testCase.port, uri.getPort())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
+}
+
+TEST(UriTests, ParseFromUriWithInvalidPath) {
+    std::vector<std::string> uriStrings{
+        {"foo://example.com/[bar"},
+        {"foo://example.com/]bar"},
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (const auto &uriString : uriStrings) {
+        ASSERT_FALSE(uri.parseFromString(uriString))
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
+}
+
+TEST(UriTests, PaserFromUriWithBarelyValidPath) {
+    struct TestCase {
+        std::string uriString;
+        std::string path;
+    };
+
+    std::vector<TestCase> testCases{
+        {"foo://example.com/bar", "/bar"},
+        {"foo://example.com/:bar", "/:bar"},
+        {"foo://example.com/@bar", "/@bar"},
+        {"foo://example.com/-bar", "/-bar"},
+        {"foo://example.com/.bar", "/.bar"},
+        {"foo://example.com/_bar", "/_bar"},
+        {"foo://example.com/~bar", "/~bar"},
+        {"foo://example.com/!bar", "/!bar"},
+        {"foo://example.com/$bar", "/$bar"},
+        {"foo://example.com/&bar", "/&bar"},
+        {"foo://example.com/'bar", "/'bar"},
+        {"foo://example.com/(bar", "/(bar"},
+        {"foo://example.com/)bar", "/)bar"},
+        {"foo://example.com/*bar", "/*bar"},
+        {"foo://example.com/+bar", "/+bar"},
+        {"foo://example.com/,bar", "/,bar"},
+        {"foo://example.com/;bar", "/;bar"},
+        {"foo://example.com/=bar", "/=bar"},
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (const auto &testCase : testCases) {
+        ASSERT_TRUE(uri.parseFromString(testCase.uriString))
+            << ">>> Test is failed at " << idx << ". <<<";
+        ASSERT_EQ(testCase.path, uri.getPath())
             << ">>> Test is failed at " << idx << ". <<<";
         ++idx;
     }

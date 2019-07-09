@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-07-03 10:26:50
- * @LastEditTime: 2019-07-05 10:35:19
+ * @LastEditTime: 2019-07-09 16:17:46
  * @Description: A header to present uri pattern.
  */
 #ifndef URIPARSER_URIPATTERN_HPP
@@ -28,8 +28,8 @@ static const std::string IPv4addressPattern =
     "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}"
     "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)";
 
-static const std::string RegNamePattern = "(?:[A-Za-z0-9\\-._~!$&'()*+,;=]|"
-                                          "%[0-9A-Fa-f]{2})*";
+static const std::string RegNamePattern =
+    "(?:[A-Za-z0-9\\-._~!$&'()*+,;=]|%[0-9A-Fa-f]{2})*";
 
 static const std::string PortPattern = "([0-9]*)";
 
@@ -41,6 +41,27 @@ static const std::string AuthorityPatten = "(?:" + UserInfoPattern + "@)?" +
                                            "(?:" + HostPattern + ")" +
                                            "(?::" + PortPattern + ")?";
 
+static const std::string PathAbemptyPattern =
+    "(?:/(?:[A-Za-z0-9\\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})*)*";
+
+static const std::string PathAbsolutePattern =
+    "/"
+    "(?:(?:[A-Za-z0-9\\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})+"
+    "(?:/(?:[A-Za-z0-9\\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})*)*"
+    ")?";
+
+static const std::string PathNoschemePattern =
+    "(?:[A-Za-z0-9\\-._~!$&'()*+,;=@]|%[0-9A-Fa-f]{2})+"
+    "(?:/(?:[A-Za-z0-9\\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})*)*";
+
+static const std::string PathRootlessPattern =
+    "(?:[A-Za-z0-9\\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})+"
+    "(?:/(?:[A-Za-z0-9\\-._~!$&'()*+,;=:@]|%[0-9A-Fa-f]{2})*)*";
+
+static const std::string PathPattern =
+    "(?:" + PathAbemptyPattern + "|" + PathAbsolutePattern + "|" +
+    PathNoschemePattern + "|" + PathRootlessPattern + "|)";
+
 } // namespace uri
 
-#endif
+#endif // URIPARSER_URIPATTERN_HPP
