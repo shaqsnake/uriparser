@@ -76,24 +76,24 @@ bool Uri::parseFromString(const std::string &uriString) {
     // TODO: refactor the match procedure.
     if (!m.empty()) {
         impl_->scheme = m[2].str(); // schema
-        if (!isValid(impl_->scheme, uri::SchemePattern))
+        if (!isValid(impl_->scheme, SchemePattern))
             return false;
 
         impl_->authority = m[4].str();
-        if (!isValid(impl_->authority, uri::AuthorityPatten))
+        if (!isValid(impl_->authority, AuthorityPatten))
             return false;
         parseAuthority();
         // The tcp port are 16bit digits.
         if (impl_->port >= (1<<16))
             return false;
-        impl_->path = m[5].str();
-        if (!isValid(impl_->path, uri::PathPattern))
+        impl_->path = m[5].str(); // path
+        if (!isValid(impl_->path, PathPattern))
             return false;
-        impl_->query = m[7].str();
-        if (!isValid(impl_->query, uri::QueryPattern))
+        impl_->query = m[7].str(); // query
+        if (!isValid(impl_->query, QueryPattern))
             return false;
-        impl_->fragment = m[9].str();
-        if (!isValid(impl_->fragment, uri::FragmentPattern))
+        impl_->fragment = m[9].str(); // fragment
+        if (!isValid(impl_->fragment, FragmentPattern))
             return false;
 
         return true;
@@ -174,7 +174,7 @@ std::string &Uri::getFragment() const { return impl_->fragment; }
  */
 void Uri::parseAuthority() {
     if (impl_->authority.size()) {
-        std::regex r(uri::AuthorityPatten);
+        std::regex r(AuthorityPatten);
         std::smatch m;
         regex_match(impl_->authority, m, r);
 
