@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-07-03 10:26:50
- * @LastEditTime: 2019-07-09 16:17:46
+ * @LastEditTime: 2019-07-10 09:23:51
  * @Description: A header to present uri pattern.
  */
 #ifndef URIPARSER_URIPATTERN_HPP
@@ -61,6 +61,10 @@ static const std::string PathRootlessPattern =
 static const std::string PathPattern =
     "(?:" + PathAbemptyPattern + "|" + PathAbsolutePattern + "|" +
     PathNoschemePattern + "|" + PathRootlessPattern + "|)";
+
+static const std::string QueryPattern = "(?:[A-Za-z0-9\\-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})*";
+
+static const std::string FragmentPattern = "(?:[A-Za-z0-9\\-._~!$&'()*+,;=:@/?]|%[0-9A-Fa-f]{2})*";
 
 } // namespace uri
 

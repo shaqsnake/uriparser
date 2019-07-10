@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-09 16:16:32
+ * @LastEditTime: 2019-07-10 09:55:54
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -293,8 +293,8 @@ TEST(UriTests, PaserFromUriWithBarelyValidAuthority) {
 
 TEST(UriTests, ParseFromUriWithInvalidPath) {
     std::vector<std::string> uriStrings{
-        {"foo://example.com/[bar"},
-        {"foo://example.com/]bar"},
+        "foo://example.com/[bar",
+        "foo://example.com/]bar",
     };
 
     size_t idx = 0;
@@ -314,6 +314,7 @@ TEST(UriTests, PaserFromUriWithBarelyValidPath) {
 
     std::vector<TestCase> testCases{
         {"foo://example.com/bar", "/bar"},
+        {"foo://example.com/0bar", "/0bar"},
         {"foo://example.com/:bar", "/:bar"},
         {"foo://example.com/@bar", "/@bar"},
         {"foo://example.com/-bar", "/-bar"},
@@ -339,6 +340,118 @@ TEST(UriTests, PaserFromUriWithBarelyValidPath) {
         ASSERT_TRUE(uri.parseFromString(testCase.uriString))
             << ">>> Test is failed at " << idx << ". <<<";
         ASSERT_EQ(testCase.path, uri.getPath())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
+}
+
+TEST(UriTests, ParseFromUriWithInvalidQuery) {
+    std::vector<std::string> uriStrings{
+        "foo://example.com/bar?zoo]",
+        "foo://example.com/bar?zoo[",
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (const auto &uriString : uriStrings) {
+        ASSERT_FALSE(uri.parseFromString(uriString))
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
+}
+
+TEST(UriTests, PaserFromUriWithBarelyValidQuery) {
+    struct TestCase {
+        std::string uriString;
+        std::string query;
+    };
+
+    std::vector<TestCase> testCases{
+        {"foo://example.com/bar?zoo", "zoo"},
+        {"foo://example.com/bar?0zoo", "0zoo"},
+        {"foo://example.com/bar?-zoo", "-zoo"},
+        {"foo://example.com/bar?.zoo", ".zoo"},
+        {"foo://example.com/bar?_zoo", "_zoo"},
+        {"foo://example.com/bar?~zoo", "~zoo"},
+        {"foo://example.com/bar?:zoo", ":zoo"},
+        {"foo://example.com/bar?@zoo", "@zoo"},
+        {"foo://example.com/bar?!zoo", "!zoo"},
+        {"foo://example.com/bar?$zoo", "$zoo"},
+        {"foo://example.com/bar?&zoo", "&zoo"},
+        {"foo://example.com/bar?'zoo", "'zoo"},
+        {"foo://example.com/bar?(zoo", "(zoo"},
+        {"foo://example.com/bar?)zoo", ")zoo"},
+        {"foo://example.com/bar?*zoo", "*zoo"},
+        {"foo://example.com/bar?+zoo", "+zoo"},
+        {"foo://example.com/bar?,zoo", ",zoo"},
+        {"foo://example.com/bar?;zoo", ";zoo"},
+        {"foo://example.com/bar?=zoo", "=zoo"},
+        {"foo://example.com/bar?/zoo", "/zoo"},
+        {"foo://example.com/bar??zoo", "?zoo"},
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (auto const &testCase : testCases) {
+        ASSERT_TRUE(uri.parseFromString(testCase.uriString))
+            << ">>> Test is failed at " << idx << ". <<<";
+        ASSERT_EQ(testCase.query, uri.getQuery())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
+}
+
+TEST(UriTests, ParseFromUriWithInvalidFragment) {
+    std::vector<std::string> uriStrings{
+        "foo://example.com/bar#zoo]",
+        "foo://example.com/bar#zoo[",
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (const auto &uriString : uriStrings) {
+        ASSERT_FALSE(uri.parseFromString(uriString))
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
+}
+
+TEST(UriTests, PaserFromUriWithBarelyValidFragment) {
+    struct TestCase {
+        std::string uriString;
+        std::string fragment;
+    };
+
+    std::vector<TestCase> testCases{
+        {"foo://example.com/bar#zoo", "zoo"},
+        {"foo://example.com/bar#0zoo", "0zoo"},
+        {"foo://example.com/bar#-zoo", "-zoo"},
+        {"foo://example.com/bar#.zoo", ".zoo"},
+        {"foo://example.com/bar#_zoo", "_zoo"},
+        {"foo://example.com/bar#~zoo", "~zoo"},
+        {"foo://example.com/bar#:zoo", ":zoo"},
+        {"foo://example.com/bar#@zoo", "@zoo"},
+        {"foo://example.com/bar#!zoo", "!zoo"},
+        {"foo://example.com/bar#$zoo", "$zoo"},
+        {"foo://example.com/bar#&zoo", "&zoo"},
+        {"foo://example.com/bar#'zoo", "'zoo"},
+        {"foo://example.com/bar#(zoo", "(zoo"},
+        {"foo://example.com/bar#)zoo", ")zoo"},
+        {"foo://example.com/bar#*zoo", "*zoo"},
+        {"foo://example.com/bar#+zoo", "+zoo"},
+        {"foo://example.com/bar#,zoo", ",zoo"},
+        {"foo://example.com/bar#;zoo", ";zoo"},
+        {"foo://example.com/bar#=zoo", "=zoo"},
+        {"foo://example.com/bar#/zoo", "/zoo"},
+        {"foo://example.com/bar#?zoo", "?zoo"},
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (auto const &testCase : testCases) {
+        ASSERT_TRUE(uri.parseFromString(testCase.uriString))
+            << ">>> Test is failed at " << idx << ". <<<";
+        ASSERT_EQ(testCase.fragment, uri.getFragment())
             << ">>> Test is failed at " << idx << ". <<<";
         ++idx;
     }

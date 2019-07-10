@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-09 16:17:59
+ * @LastEditTime: 2019-07-10 10:02:07
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -90,7 +90,11 @@ bool Uri::parseFromString(const std::string &uriString) {
         if (!isValid(impl_->path, uri::PathPattern))
             return false;
         impl_->query = m[7].str();
+        if (!isValid(impl_->query, uri::QueryPattern))
+            return false;
         impl_->fragment = m[9].str();
+        if (!isValid(impl_->fragment, uri::FragmentPattern))
+            return false;
 
         return true;
     }
