@@ -3,9 +3,10 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-10 10:02:07
+ * @LastEditTime: 2019-07-10 13:35:08
  * @Description: An implementation of class uri::Uri.
  */
+#include "UriPctCoder.hpp"
 #include "UriPattern.hpp"
 #include <iostream>
 #include <regex>
@@ -75,11 +76,13 @@ bool Uri::parseFromString(const std::string &uriString) {
 
     // TODO: refactor the match procedure.
     if (!m.empty()) {
+        UriPctCoder uriPctCoder;
+
         impl_->scheme = m[2].str(); // schema
         if (!isValid(impl_->scheme, SchemePattern))
             return false;
 
-        impl_->authority = m[4].str();
+        impl_->authority = uriPctCoder.decode(m[4].str()); // authority
         if (!isValid(impl_->authority, AuthorityPatten))
             return false;
         parseAuthority();

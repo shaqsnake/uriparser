@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-10 09:55:54
+ * @LastEditTime: 2019-07-10 12:55:21
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -452,6 +452,33 @@ TEST(UriTests, PaserFromUriWithBarelyValidFragment) {
         ASSERT_TRUE(uri.parseFromString(testCase.uriString))
             << ">>> Test is failed at " << idx << ". <<<";
         ASSERT_EQ(testCase.fragment, uri.getFragment())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
+}
+
+TEST(UriTests, PaserFromUriDecodingAuthority) {
+    struct TestCase {
+        std::string rawUriString;
+        std::string decodedUriString;
+    };
+
+    std::vector<TestCase> testCases {
+        {"foo://bar@example.com:80", "bar@example.com:80"},
+        {"foo://%41@example.com:80", "A@example.com:80"},
+        {"foo://bar@ex%61mple.com:80", "bar@example.com:80"},
+        {"foo://%41%42%43@example.com:80", "ABC@example.com:80"},
+        {"foo://bar@example%2Ecom:80", "bar@example.com:80"},
+        {"foo://bar@example%2ecom:80", "bar@example.com:80"},
+        {"foo://bar@%61%62%63:80", "bar@abc:80"},
+        {"foo://bar@%61%GG:80", "bar@a%GG:80"},
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (auto const &testCase : testCases) {
+        uri.parseFromString(testCase.rawUriString);
+        ASSERT_EQ(testCase.decodedUriString, uri.getAuthority())
             << ">>> Test is failed at " << idx << ". <<<";
         ++idx;
     }

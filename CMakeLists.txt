@@ -9,9 +9,11 @@ set(CMAKE_CXX_STANDARD 11)
 set(Headers
     include/uriparser/Uri.hpp
     src/UriPattern.hpp
+    src/UriPctCoder.hpp
 )
 
 set (Sources
+    src/UriPctCoder.cpp
     src/Uri.cpp
 )
 
