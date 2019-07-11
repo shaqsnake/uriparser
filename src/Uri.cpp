@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-11 09:18:16
+ * @LastEditTime: 2019-07-11 09:41:57
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPctCoder.hpp"
@@ -92,10 +92,10 @@ bool Uri::parseFromString(const std::string &uriString) {
         impl_->path = uriPctCoder.decode(m[5].str()); // path
         if (!isValid(impl_->path, PathPattern))
             return false;
-        impl_->query = m[7].str(); // query
+        impl_->query = uriPctCoder.decode(m[7].str()); // query
         if (!isValid(impl_->query, QueryPattern))
             return false;
-        impl_->fragment = m[9].str(); // fragment
+        impl_->fragment = uriPctCoder.decode(m[9].str()); // fragment
         if (!isValid(impl_->fragment, FragmentPattern))
             return false;
 

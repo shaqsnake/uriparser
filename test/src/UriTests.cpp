@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-11 09:19:02
+ * @LastEditTime: 2019-07-11 09:42:17
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -508,4 +508,56 @@ TEST(UriTests, PaserFromUriDecodingPath) {
             << ">>> Test is failed at " << idx << ". <<<";
         ++idx;
     }    
+}
+
+TEST(UriTests, PaserFromUriDecodingQuery) {
+    struct TestCase {
+        std::string rawUriString;
+        std::string decodedUriString;
+    };
+
+    std::vector<TestCase> testCases{
+        {"foo://example.com?bar", "bar"},
+        {"foo://example.com?b%61r", "bar"},
+        {"foo://example.com?bar/%2b", "bar/+"},
+        {"foo://example.com?b%2dr", "b-r"},
+        {"foo://example.com?b%2Dr", "b-r"},
+        {"foo://@example.com?%41%42%43", "ABC"},
+        {"foo://@example.com?%GG", "%GG"},
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (auto const &testCase : testCases) {
+        uri.parseFromString(testCase.rawUriString);
+        ASSERT_EQ(testCase.decodedUriString, uri.getQuery())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
+}
+
+TEST(UriTests, PaserFromUriDecodingFragment) {
+    struct TestCase {
+        std::string rawUriString;
+        std::string decodedUriString;
+    };
+
+    std::vector<TestCase> testCases{
+        {"foo://example.com#bar", "bar"},
+        {"foo://example.com#b%61r", "bar"},
+        {"foo://example.com#bar/%2b", "bar/+"},
+        {"foo://example.com#b%2dr", "b-r"},
+        {"foo://example.com#b%2Dr", "b-r"},
+        {"foo://@example.com#%41%42%43", "ABC"},
+        {"foo://@example.com#%GG", "%GG"},
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (auto const &testCase : testCases) {
+        uri.parseFromString(testCase.rawUriString);
+        ASSERT_EQ(testCase.decodedUriString, uri.getFragment())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
 }
