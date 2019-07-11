@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-10 13:35:08
+ * @LastEditTime: 2019-07-11 09:18:16
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPctCoder.hpp"
@@ -89,7 +89,7 @@ bool Uri::parseFromString(const std::string &uriString) {
         // The tcp port are 16bit digits.
         if (impl_->port >= (1<<16))
             return false;
-        impl_->path = m[5].str(); // path
+        impl_->path = uriPctCoder.decode(m[5].str()); // path
         if (!isValid(impl_->path, PathPattern))
             return false;
         impl_->query = m[7].str(); // query

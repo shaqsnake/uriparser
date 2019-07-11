@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-10 12:55:21
+ * @LastEditTime: 2019-07-11 09:19:02
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -463,7 +463,7 @@ TEST(UriTests, PaserFromUriDecodingAuthority) {
         std::string decodedUriString;
     };
 
-    std::vector<TestCase> testCases {
+    std::vector<TestCase> testCases{
         {"foo://bar@example.com:80", "bar@example.com:80"},
         {"foo://%41@example.com:80", "A@example.com:80"},
         {"foo://bar@ex%61mple.com:80", "bar@example.com:80"},
@@ -482,4 +482,30 @@ TEST(UriTests, PaserFromUriDecodingAuthority) {
             << ">>> Test is failed at " << idx << ". <<<";
         ++idx;
     }
+}
+
+TEST(UriTests, PaserFromUriDecodingPath) {
+    struct TestCase {
+        std::string rawUriString;
+        std::string decodedUriString;
+    };
+
+    std::vector<TestCase> testCases{
+        {"foo://example.com/bar", "/bar"},
+        {"foo://example.com/b%61r", "/bar"},
+        {"foo://example.com/bar/%2b", "/bar/+"},
+        {"foo://example.com/b%2dr", "/b-r"},
+        {"foo://example.com/b%2Dr", "/b-r"},
+        {"foo://@example.com/%41%42%43", "/ABC"},
+        {"foo://@example.com/%GG", "/%GG"},
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (auto const &testCase : testCases) {
+        uri.parseFromString(testCase.rawUriString);
+        ASSERT_EQ(testCase.decodedUriString, uri.getPath())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }    
 }
