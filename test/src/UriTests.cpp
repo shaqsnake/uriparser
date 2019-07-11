@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-11 09:42:17
+ * @LastEditTime: 2019-07-11 14:00:16
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -560,5 +560,30 @@ TEST(UriTests, PaserFromUriDecodingFragment) {
         ASSERT_EQ(testCase.decodedUriString, uri.getFragment())
             << ">>> Test is failed at " << idx << ". <<<";
         ++idx;
+    }
+}
+
+TEST(UriTests, ProduceToUriStrings) {
+    struct TestCase {
+        std::string inputUriString;
+        std::string targetUriString;
+    };
+
+    std::vector<TestCase> testCases{
+        {"http://user:password@example.com:8080/some/path/to"
+         "/somewhere?search=regex&order=desc#fragment",
+         "http%3A%2F%2Fuser%3Apassword%40example.com%3A8080%2Fsome%2Fpath%2Fto"
+         "%2Fsomewhere%3Fsearch%3Dregex%26order%3Ddesc%23fragment"},
+        {"foo://%41%42%43@example.com:80/b%2dr?GG",
+         "foo%3A%2F%2FABC%40example.com%3A80%2Fb-r%3FGG"},
+        {"example.com/", "example.com%2F"},
+        {"/foo/bar", "%2Ffoo%2Fbar"},
+    };
+
+    size_t idx = 0;
+    for (const auto &testCase : testCases) {
+        uri::Uri uri;
+        ASSERT_TRUE(uri.parseFromString(testCase.inputUriString));
+        ASSERT_EQ(testCase.targetUriString, uri.produceToString());
     }
 }

@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-07-10 10:47:34
- * @LastEditTime: 2019-07-10 14:05:50
+ * @LastEditTime: 2019-07-11 14:01:51
  * @Description:
  */
 #include "UriPctCoder.hpp"
@@ -16,9 +16,10 @@ namespace uri {
  * The concrete implemetation of Uri class.
  */
 struct UriPctCoder::Impl {
-    std::set<u_char> hexdig{'0', '1', '2', '3', '4', '5', '6', '7',
-                            '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
-                            'a', 'b', 'c', 'd', 'e', 'f'};
+    // std::set<u_char> hexdig{'0', '1', '2', '3', '4', '5', '6', '7',
+    //                         '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
+    //                         'a', 'b', 'c', 'd', 'e', 'f'};
+    std::string hex = "0123456789ABCDEF";
 };
 
 /**
@@ -35,20 +36,20 @@ UriPctCoder::~UriPctCoder() = default;
  * @description:
  *     Decode pecent hexdig format("% HEXDIG HEXDIG") terms of URI string into
  *     ascii character.
- * @param[in] rawUriString
+ * @param[in] inputUriString
  *      An URI string contains percent hexdig format("% HEXDIG HEXDIG") terms.
  * @return:
  *      A decoded URI string.
  */
-std::string UriPctCoder::decode(const std::string &rawUriString) {
+std::string UriPctCoder::decode(const std::string &inputUriString) {
     std::string decodedUriString = "";
     std::string hexdigString = "";
     bool decodeMode = false;
-    for (const auto &c : rawUriString) {
+    for (const auto &c : inputUriString) {
         if (decodeMode) {
-            hexdigString += c;
+            hexdigString += toupper(c);
             // The hexdig is not valid.
-            if (!impl_->hexdig.count(c)) {
+            if (impl_->hex.find(toupper(c)) == std::string::npos) {
                 decodedUriString += hexdigString;
                 decodeMode = false;
                 hexdigString.clear();
@@ -71,6 +72,34 @@ std::string UriPctCoder::decode(const std::string &rawUriString) {
     }
 
     return decodedUriString;
+}
+
+/**
+ * @description:
+ *     Encode input string,
+ *     if a charater is not unreserved, change it to hexdig format.
+ * @param[in] inputUriString
+ *     An raw URI string.
+ * @return:
+ *    An encoded URI string.
+ */
+std::string UriPctCoder::encode(const std::string &inputUriString) {
+    std::string targetUriString = "";
+
+    for (const auto &c : inputUriString) {
+        // Unreserved character.
+        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+            (c >= '0' && c <= '9') || c == '-' || c == '_' || c == '.' ||
+            c == '~') {
+            targetUriString += c;
+        } else {
+            targetUriString += "%";
+            targetUriString += impl_->hex[(c & 0xF0) >> 4];
+            targetUriString += impl_->hex[c & 0x0F];
+        }
+    }
+
+    return targetUriString;
 }
 
 /**

@@ -3,11 +3,11 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-11 09:41:57
+ * @LastEditTime: 2019-07-11 14:03:46
  * @Description: An implementation of class uri::Uri.
  */
-#include "UriPctCoder.hpp"
 #include "UriPattern.hpp"
+#include "UriPctCoder.hpp"
 #include <iostream>
 #include <regex>
 #include <uriparser/Uri.hpp>
@@ -104,6 +104,32 @@ bool Uri::parseFromString(const std::string &uriString) {
         return true;
     }
     return false;
+}
+
+/**
+ * @description:
+ *     Produce URI string by its components, and encode charaters
+ *     which are not unreserved.
+ * @return:
+ *     Encoded URI string.
+ */
+std::string Uri::produceToString() {
+    std::string target = "";
+    if (impl_->scheme.size())
+        target += impl_->scheme + "://";
+
+    target += impl_->authority;
+
+    target += impl_->path;
+
+    if (impl_->query.size())
+        target += "?" + impl_->query;
+
+    if (impl_->fragment.size())
+        target += "#" + impl_->fragment;
+
+    UriPctCoder uriPctCoder;
+    return uriPctCoder.encode(target);
 }
 
 /**

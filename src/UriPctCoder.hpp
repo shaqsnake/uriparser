@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-07-10 10:47:27
- * @LastEditTime: 2019-07-10 13:39:24
+ * @LastEditTime: 2019-07-11 14:02:42
  * @Description:
  */
 
@@ -32,7 +32,8 @@ public:
     UriPctCoder &operator=(UriPctCoder &&) = delete;
 
 public:
-    std::string decode(const std::string &rawUriString);
+    std::string decode(const std::string &inputUriString);
+    std::string encode(const std::string &inputUriString);
 
 private:
     struct Impl;
