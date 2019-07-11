@@ -124,12 +124,11 @@ TEST(UriTests, ParseFromUriWithInvalidScheme) {
         "foo!://example.com", "foo$://example.com", "foo&://example.com",
         "foo'://example.com", "foo(://example.com", "foo)://example.com",
         "foo*://example.com", "foo,://example.com", "foo;://example.com",
-        "foo=://example.com", "foo?://example.com", "foo#://example.com",
-        "foo[://example.com", "foo]://example.com", "foo@://example.com",
-        "foo_://example.com", "foo~://example.com",
+        "foo=://example.com", "foo[://example.com", "foo]://example.com",
+        "foo@://example.com", "foo_://example.com", "foo~://example.com",
         // In this case , the scheme is "foo", so it's legal,
         // but the authority, "://example.com", is ilegal.
-        // "foo:://example.com",
+        // "foo:://example.com", "foo?://example.com", "foo#://example.com",
     };
 
     size_t idx = 0;
@@ -388,6 +387,7 @@ TEST(UriTests, PaserFromUriWithBarelyValidQuery) {
         {"foo://example.com/bar?=zoo", "=zoo"},
         {"foo://example.com/bar?/zoo", "/zoo"},
         {"foo://example.com/bar??zoo", "?zoo"},
+        {"foo?://example.com", "://example.com"}
     };
 
     size_t idx = 0;
@@ -444,6 +444,7 @@ TEST(UriTests, PaserFromUriWithBarelyValidFragment) {
         {"foo://example.com/bar#=zoo", "=zoo"},
         {"foo://example.com/bar#/zoo", "/zoo"},
         {"foo://example.com/bar#?zoo", "?zoo"},
+        {"foo#://example.com", "://example.com"},
     };
 
     size_t idx = 0;
@@ -507,7 +508,7 @@ TEST(UriTests, PaserFromUriDecodingPath) {
         ASSERT_EQ(testCase.decodedUriString, uri.getPath())
             << ">>> Test is failed at " << idx << ". <<<";
         ++idx;
-    }    
+    }
 }
 
 TEST(UriTests, PaserFromUriDecodingQuery) {

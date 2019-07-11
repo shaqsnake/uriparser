@@ -79,24 +79,26 @@ bool Uri::parseFromString(const std::string &uriString) {
         UriPctCoder uriPctCoder;
 
         impl_->scheme = m[2].str(); // schema
-        if (!isValid(impl_->scheme, SchemePattern))
+        if (!impl_->scheme.empty() && !isValid(impl_->scheme, SchemePattern))
             return false;
 
         impl_->authority = uriPctCoder.decode(m[4].str()); // authority
-        if (!isValid(impl_->authority, AuthorityPatten))
+        if (!impl_->authority.empty() &&
+            !isValid(impl_->authority, AuthorityPatten))
             return false;
         parseAuthority();
         // The tcp port are 16bit digits.
-        if (impl_->port >= (1<<16))
+        if (impl_->port >= (1 << 16))
             return false;
         impl_->path = uriPctCoder.decode(m[5].str()); // path
-        if (!isValid(impl_->path, PathPattern))
+        if (!impl_->path.empty() && !isValid(impl_->path, PathPattern))
             return false;
         impl_->query = uriPctCoder.decode(m[7].str()); // query
-        if (!isValid(impl_->query, QueryPattern))
+        if (!impl_->query.empty() && !isValid(impl_->query, QueryPattern))
             return false;
         impl_->fragment = uriPctCoder.decode(m[9].str()); // fragment
-        if (!isValid(impl_->fragment, FragmentPattern))
+        if (!impl_->fragment.empty() &&
+            !isValid(impl_->fragment, FragmentPattern))
             return false;
 
         return true;
