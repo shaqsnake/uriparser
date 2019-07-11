@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-11 14:03:46
+ * @LastEditTime: 2019-07-11 15:48:42
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -114,22 +114,8 @@ bool Uri::parseFromString(const std::string &uriString) {
  *     Encoded URI string.
  */
 std::string Uri::produceToString() {
-    std::string target = "";
-    if (impl_->scheme.size())
-        target += impl_->scheme + "://";
-
-    target += impl_->authority;
-
-    target += impl_->path;
-
-    if (impl_->query.size())
-        target += "?" + impl_->query;
-
-    if (impl_->fragment.size())
-        target += "#" + impl_->fragment;
-
     UriPctCoder uriPctCoder;
-    return uriPctCoder.encode(target);
+    return uriPctCoder.encode(recompose());
 }
 
 /**
@@ -220,6 +206,32 @@ void Uri::parseAuthority() {
                 impl_->port = std::stoi(m[3].str());
         }
     }
+}
+
+/**
+ * @description:
+ *     Recompose URI components to obtain the corresponding URI
+ *     string.
+ * @return:
+ *     A completed URI string.
+ */
+std::string Uri::recompose() {
+    std::string target = "";
+    if (!impl_->scheme.empty())
+        target += impl_->scheme + ":";
+
+    if (!impl_->authority.empty())
+        target += "//" + impl_->authority;
+
+    target += impl_->path;
+
+    if (!impl_->query.empty())
+        target += "?" + impl_->query;
+
+    if (!impl_->fragment.empty())
+        target += "#" + impl_->fragment;
+
+    return target;
 }
 
 } // namespace uri

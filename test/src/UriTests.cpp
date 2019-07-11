@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-11 14:00:16
+ * @LastEditTime: 2019-07-11 15:39:01
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -578,6 +578,7 @@ TEST(UriTests, ProduceToUriStrings) {
          "foo%3A%2F%2FABC%40example.com%3A80%2Fb-r%3FGG"},
         {"example.com/", "example.com%2F"},
         {"/foo/bar", "%2Ffoo%2Fbar"},
+        {"http://user:password@", "http%3A%2F%2Fuser%3Apassword%40"},
     };
 
     size_t idx = 0;

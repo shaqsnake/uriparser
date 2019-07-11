@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-11 14:01:03
+ * @LastEditTime: 2019-07-11 15:47:00
  * @Description: A declaration of class uri::Uri.
  */
 #ifndef URIPARSER_URI_HPP
@@ -49,6 +49,7 @@ private:
     std::unique_ptr<struct Impl> impl_;
     
     void parseAuthority();
+    std::string recompose();
 };
 
 } // namespace uri
