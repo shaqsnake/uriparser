@@ -365,30 +365,28 @@ TEST(UriTests, PaserFromUriWithBarelyValidQuery) {
         std::string query;
     };
 
-    std::vector<TestCase> testCases{
-        {"foo://example.com/bar?zoo", "zoo"},
-        {"foo://example.com/bar?0zoo", "0zoo"},
-        {"foo://example.com/bar?-zoo", "-zoo"},
-        {"foo://example.com/bar?.zoo", ".zoo"},
-        {"foo://example.com/bar?_zoo", "_zoo"},
-        {"foo://example.com/bar?~zoo", "~zoo"},
-        {"foo://example.com/bar?:zoo", ":zoo"},
-        {"foo://example.com/bar?@zoo", "@zoo"},
-        {"foo://example.com/bar?!zoo", "!zoo"},
-        {"foo://example.com/bar?$zoo", "$zoo"},
-        {"foo://example.com/bar?&zoo", "&zoo"},
-        {"foo://example.com/bar?'zoo", "'zoo"},
-        {"foo://example.com/bar?(zoo", "(zoo"},
-        {"foo://example.com/bar?)zoo", ")zoo"},
-        {"foo://example.com/bar?*zoo", "*zoo"},
-        {"foo://example.com/bar?+zoo", "+zoo"},
-        {"foo://example.com/bar?,zoo", ",zoo"},
-        {"foo://example.com/bar?;zoo", ";zoo"},
-        {"foo://example.com/bar?=zoo", "=zoo"},
-        {"foo://example.com/bar?/zoo", "/zoo"},
-        {"foo://example.com/bar??zoo", "?zoo"},
-        {"foo?://example.com", "://example.com"}
-    };
+    std::vector<TestCase> testCases{{"foo://example.com/bar?zoo", "zoo"},
+                                    {"foo://example.com/bar?0zoo", "0zoo"},
+                                    {"foo://example.com/bar?-zoo", "-zoo"},
+                                    {"foo://example.com/bar?.zoo", ".zoo"},
+                                    {"foo://example.com/bar?_zoo", "_zoo"},
+                                    {"foo://example.com/bar?~zoo", "~zoo"},
+                                    {"foo://example.com/bar?:zoo", ":zoo"},
+                                    {"foo://example.com/bar?@zoo", "@zoo"},
+                                    {"foo://example.com/bar?!zoo", "!zoo"},
+                                    {"foo://example.com/bar?$zoo", "$zoo"},
+                                    {"foo://example.com/bar?&zoo", "&zoo"},
+                                    {"foo://example.com/bar?'zoo", "'zoo"},
+                                    {"foo://example.com/bar?(zoo", "(zoo"},
+                                    {"foo://example.com/bar?)zoo", ")zoo"},
+                                    {"foo://example.com/bar?*zoo", "*zoo"},
+                                    {"foo://example.com/bar?+zoo", "+zoo"},
+                                    {"foo://example.com/bar?,zoo", ",zoo"},
+                                    {"foo://example.com/bar?;zoo", ";zoo"},
+                                    {"foo://example.com/bar?=zoo", "=zoo"},
+                                    {"foo://example.com/bar?/zoo", "/zoo"},
+                                    {"foo://example.com/bar??zoo", "?zoo"},
+                                    {"foo?://example.com", "://example.com"}};
 
     size_t idx = 0;
     uri::Uri uri;
@@ -591,7 +589,7 @@ TEST(UriTests, ProduceToUriStrings) {
     }
 }
 
-TEST(UriTests, PaserFromUriWithCaseSensitive) {
+TEST(UriTests, ParseFromUriWithCaseSensitive) {
     struct TestCase {
         std::string uriString;
         std::string scheme;
@@ -606,13 +604,14 @@ TEST(UriTests, PaserFromUriWithCaseSensitive) {
     };
 
     size_t idx = 0;
+    uri::Uri uri;
     for (const auto &testCase : testCases) {
-        uri::Uri uri;
         ASSERT_TRUE(uri.parseFromString(testCase.uriString))
             << ">>> Test is failed at " << idx << ". <<<";
         ASSERT_EQ(testCase.scheme, uri.getScheme())
             << ">>> Test is failed at " << idx << ". <<<";
         ASSERT_EQ(testCase.host, uri.getHost())
             << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
     }
 }
