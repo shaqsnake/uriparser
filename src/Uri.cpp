@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-11 15:48:42
+ * @LastEditTime: 2019-07-15 09:39:49
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -79,6 +79,8 @@ bool Uri::parseFromString(const std::string &uriString) {
         UriPctCoder uriPctCoder;
 
         impl_->scheme = m[2].str(); // schema
+        transform(impl_->scheme.begin(), impl_->scheme.end(),
+                  impl_->scheme.begin(), ::tolower);
         if (!impl_->scheme.empty() && !isValid(impl_->scheme, SchemePattern))
             return false;
 
@@ -202,6 +204,8 @@ void Uri::parseAuthority() {
         if (m.size()) {
             impl_->userinfo = m[1].str();
             impl_->host = m[2].str();
+            transform(impl_->host.begin(), impl_->host.end(),
+                      impl_->host.begin(), ::tolower);
             if (m[3].str().size())
                 impl_->port = std::stoi(m[3].str());
         }

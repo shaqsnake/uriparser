@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-11 15:39:01
+ * @LastEditTime: 2019-07-15 09:43:03
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -584,7 +584,35 @@ TEST(UriTests, ProduceToUriStrings) {
     size_t idx = 0;
     for (const auto &testCase : testCases) {
         uri::Uri uri;
-        ASSERT_TRUE(uri.parseFromString(testCase.inputUriString));
-        ASSERT_EQ(testCase.targetUriString, uri.produceToString());
+        ASSERT_TRUE(uri.parseFromString(testCase.inputUriString))
+            << ">>> Test is failed at " << idx << ". <<<";
+        ASSERT_EQ(testCase.targetUriString, uri.produceToString())
+            << ">>> Test is failed at " << idx << ". <<<";
+    }
+}
+
+TEST(UriTests, PaserFromUriWithCaseSensitive) {
+    struct TestCase {
+        std::string uriString;
+        std::string scheme;
+        std::string host;
+    };
+
+    std::vector<TestCase> testCases{
+        {"HTTP://www.EXAMPLE.com/", "http", "www.example.com"},
+        {"htTp://www.example.com/", "http", "www.example.com"},
+        {"http://www.exAMple.com/", "http", "www.example.com"},
+        {"hTTp://www.ex%41%4dple.com/", "http", "www.example.com"},
+    };
+
+    size_t idx = 0;
+    for (const auto &testCase : testCases) {
+        uri::Uri uri;
+        ASSERT_TRUE(uri.parseFromString(testCase.uriString))
+            << ">>> Test is failed at " << idx << ". <<<";
+        ASSERT_EQ(testCase.scheme, uri.getScheme())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ASSERT_EQ(testCase.host, uri.getHost())
+            << ">>> Test is failed at " << idx << ". <<<";
     }
 }
