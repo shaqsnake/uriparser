@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-15 09:39:49
+ * @LastEditTime: 2019-07-15 15:53:44
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -95,6 +95,7 @@ bool Uri::parseFromString(const std::string &uriString) {
         impl_->path = uriPctCoder.decode(m[5].str()); // path
         if (!impl_->path.empty() && !isValid(impl_->path, PathPattern))
             return false;
+        normalizePath(impl_->path);
         impl_->query = uriPctCoder.decode(m[7].str()); // query
         if (!impl_->query.empty() && !isValid(impl_->query, QueryPattern))
             return false;
@@ -236,6 +237,67 @@ std::string Uri::recompose() {
         target += "#" + impl_->fragment;
 
     return target;
+}
+
+/**
+ * @description:
+ *     Normalize path component by "remove_dot_segments" routine
+ *     which is interpreting and removing the special "." and ".."
+ *     complete path segments from a referenced path.
+ * @param[in|out] outputBuffer
+ *     A string buffer should be normalized in-place.
+ */
+void Uri::normalizePath(std::string &outputBuffer) {
+    std::string inputBuffer = std::move(outputBuffer);
+    outputBuffer.clear();
+
+    while (!inputBuffer.empty()) {
+        /* DEBUG code */
+        // std::cout << "out: " << outputBuffer << " ";
+        // std::cout << "in: " << inputBuffer << std::endl;
+        auto segPos = inputBuffer.find("/", 1);
+        auto seg = inputBuffer.substr(0, segPos);
+        // std::cout << seg << std::endl;
+
+        if (seg == "../" || seg == "./") { // 2A
+            // std::cout << "STEP 2A:" << std::endl;
+            size_t pos = inputBuffer.find("/");
+            inputBuffer.erase(0, pos + 1);
+        } else if (seg == "/." || seg == "/./") { // 2B
+            // std::cout << "STEP 2B:" << std::endl;
+            inputBuffer.erase(0, 2);
+            if (inputBuffer.find("/") != 0) {
+                inputBuffer.insert(0, "/");
+            }
+        } else if (seg == "/.." || seg == "/../") { // 2C
+            // std::cout << "STEP 2C:" << std::endl;
+            inputBuffer.erase(0, 3);
+            if (!outputBuffer.empty()) {
+                auto pos = outputBuffer.rfind("/");
+                outputBuffer.erase(pos);
+            }
+            if (inputBuffer.find("/") != 0) {
+                inputBuffer.insert(0, "/");
+            }
+        } else if (seg == "." || seg == "..") { // 2D
+            // std::cout << "STEP 2D:" << std::endl;
+            inputBuffer.erase(0, seg.size());
+        } else { // 2E
+            // std::cout << "STEP 2E:" << std::endl;
+            if (inputBuffer.find("/") == 0) {
+                outputBuffer += "/";
+                inputBuffer.erase(0, 1);
+            }
+            size_t pos = 0;
+            if ((pos = inputBuffer.find("/")) != std::string::npos) {
+                outputBuffer += inputBuffer.substr(0, pos);
+                inputBuffer.erase(0, pos);
+            } else {
+                outputBuffer += inputBuffer;
+                inputBuffer.clear();
+            }
+        }
+    }
 }
 
 } // namespace uri

@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-15 09:43:03
+ * @LastEditTime: 2019-07-15 15:53:53
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -611,6 +611,29 @@ TEST(UriTests, ParseFromUriWithCaseSensitive) {
         ASSERT_EQ(testCase.scheme, uri.getScheme())
             << ">>> Test is failed at " << idx << ". <<<";
         ASSERT_EQ(testCase.host, uri.getHost())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
+}
+
+TEST(UriTests, ParseFromUriWithNomalizePath) {
+    struct TestCase {
+        std::string uriString;
+        std::string path;
+    };
+
+    std::vector<TestCase> testCases{
+        {"/a/b/c/./../../g", "/a/g"}, {"mid/content=5/../6", "mid/6"},
+        {"/a/b/c/../../../g", "/g"},  {"/a/b/c/../../../../g", "/g"},
+        {"foo://bar.com/", "/"},      {"foo://bar.com/../g", "/g"},
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (const auto &testCase : testCases) {
+        ASSERT_TRUE(uri.parseFromString(testCase.uriString))
+            << ">>> Test is failed at " << idx << ". <<<";
+        ASSERT_EQ(testCase.path, uri.getPath())
             << ">>> Test is failed at " << idx << ". <<<";
         ++idx;
     }
