@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-16 10:02:46
+ * @LastEditTime: 2019-07-16 11:25:16
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -241,6 +241,72 @@ std::string Uri::recompose() {
 
 /**
  * @description:
+ *     Get the path segment of a URI string.
+ *     The segement delimeter is '/' character.
+ *     If a path doesn't contain '/', the segment should be whole string.
+ * @param[in] buffer
+ *     A string buffer to be deal with.
+ * @return:
+ *     A string of path segment.
+ */
+std::string getPathSegment(std::string &buffer) {
+    auto segPos = buffer.find("/", 1);
+    auto segment = buffer.substr(0, segPos + 1);
+    if (segment.empty())
+        segment = buffer;
+    return segment;
+}
+
+/**
+ * @description:
+ *     Remove the leading segment of a path string buffer.
+ * @param[in|out] buffer
+ *     A string buffer to be deal with.
+ */
+void removeFirstPathSegment(std::string &buffer, std::string &segment) {
+    buffer.erase(0, segment.size());
+}
+
+/**
+ * @description:
+ *     Remove the last segment of a path string buffer.
+ * @param[in|out] buffer
+ *     A string buffer to be deal with.
+ */
+void removeLastPathSegment(std::string &buffer) {
+    auto pos = buffer.rfind("/");
+    buffer.erase(pos);
+}
+
+/**
+ * @description:
+ *     Move the first path segment in the input string buffer
+ *     to the end of output string buffer, including the initial
+ *     '/' charactre (if any) and any subsequent characters up to.
+ * @param[in] inputBuffer
+ *     An input string buffer to be deal with.
+ * @param[out] outputBuffer
+ *     An output string buffer to be deal with.
+ */
+void movePathSegment(std::string &inputBuffer, std::string &outputBuffer) {
+    // Including the initial "/" character (if any)
+    if (inputBuffer.find("/") == 0) {
+        outputBuffer += "/";
+        inputBuffer.erase(0, 1);
+    }
+    // Move path segment from input buffer to output buffer.
+    size_t pos = 0;
+    if ((pos = inputBuffer.find("/")) != std::string::npos) {
+        outputBuffer += inputBuffer.substr(0, pos);
+        inputBuffer.erase(0, pos);
+    } else { // The rest segment which doesn't contain '/'.
+        outputBuffer += inputBuffer;
+        inputBuffer.clear();
+    }
+}
+
+/**
+ * @description:
  *     Normalize path component by "remove_dot_segments" routine
  *     which is interpreting and removing the special "." and ".."
  *     complete path segments from a referenced path.
@@ -254,54 +320,34 @@ void Uri::normalizePath(std::string &outputBuffer) {
 
     while (!inputBuffer.empty()) {
         // Extract path segment from input buffer.
-        auto segPos = inputBuffer.find("/", 1);
-        auto seg = inputBuffer.substr(0, segPos + 1);
-        if (seg.empty())
-            seg = inputBuffer;
+        auto seg = getPathSegment(inputBuffer);
+
         // std::cout << seg << std::endl;
 
         if (seg == "../" || seg == "./") { // "Remove_dot_segments" routine 2A
             // std::cout << "STEP 2A:" << " ";
-            size_t pos = inputBuffer.find("/");
-            inputBuffer.erase(0, pos + 1);
+            removeFirstPathSegment(inputBuffer, seg);
         } else if (seg == "/./" ||
                    seg == "/.") { // "Remove_dot_segments" routine 2B
             // std::cout << "STEP 2B:" << " ";
-            inputBuffer.erase(0, 2);
-            if (inputBuffer.find("/") != 0) {
+            removeFirstPathSegment(inputBuffer, seg);
+            if (inputBuffer.find("/") != 0)
                 inputBuffer.insert(0, "/");
-            }
         } else if (seg == "/../" ||
                    seg == "/..") { // "Remove_dot_segments" routine 2C
             // std::cout << "STEP 2C:" << " ";
-            inputBuffer.erase(0, 3);
-            if (!outputBuffer.empty()) {
-                auto pos = outputBuffer.rfind("/");
-                outputBuffer.erase(pos);
-            }
-            if (inputBuffer.find("/") != 0) {
+            removeFirstPathSegment(inputBuffer, seg);
+            if (inputBuffer.find("/") != 0)
                 inputBuffer.insert(0, "/");
-            }
+            if (!outputBuffer.empty())
+                removeLastPathSegment(outputBuffer);
         } else if (seg == "." ||
                    seg == "..") { // "Remove_dot_segments" routine 2D
             // std::cout << "STEP 2D:" << " ";
-            inputBuffer.erase(0, seg.size());
+            removeFirstPathSegment(inputBuffer, seg);
         } else { // "Remove_dot_segments" routine 2E
             // std::cout << "STEP 2E:" << " ";
-            // Output buffer should start with '/' if path is absolutely.
-            if (inputBuffer.find("/") == 0) {
-                outputBuffer += "/";
-                inputBuffer.erase(0, 1);
-            }
-            // Move path segment from input buffer to output buffer.
-            size_t pos = 0;
-            if ((pos = inputBuffer.find("/")) != std::string::npos) {
-                outputBuffer += inputBuffer.substr(0, pos);
-                inputBuffer.erase(0, pos);
-            } else { // only have last segment rest.
-                outputBuffer += inputBuffer;
-                inputBuffer.clear();
-            }
+            movePathSegment(inputBuffer, outputBuffer);
         }
         /* DEBUG code */
         // std::cout << "out: " << outputBuffer << " ";
