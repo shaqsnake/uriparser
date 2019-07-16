@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-15 15:53:53
+ * @LastEditTime: 2019-07-16 10:03:16
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -622,11 +622,26 @@ TEST(UriTests, ParseFromUriWithNomalizePath) {
         std::string path;
     };
 
-    std::vector<TestCase> testCases{
-        {"/a/b/c/./../../g", "/a/g"}, {"mid/content=5/../6", "mid/6"},
-        {"/a/b/c/../../../g", "/g"},  {"/a/b/c/../../../../g", "/g"},
-        {"foo://bar.com/", "/"},      {"foo://bar.com/../g", "/g"},
-    };
+    std::vector<TestCase> testCases{{"/a/b/c/./../../g", "/a/g"},
+                                    {"mid/content=5/../6", "mid/6"},
+                                    {"/a/b/c/../../../g", "/g"},
+                                    {"/a/b/c/../../../../g", "/g"},
+                                    {"foo://bar.com/", "/"},
+                                    {"foo://bar.com/../g", "/g"},
+                                    {"foo://bar.com/a/../b/", "/b/"},
+                                    {"./foo/bar", "foo/bar"},
+                                    {".", ""},
+                                    {"..", ""},
+                                    {"/", "/"},
+                                    {"foo/bar", "foo/bar"},
+                                    {"foo/bar/..", "foo/"},
+                                    {"foo/bar/.", "foo/bar/"},
+                                    {"foo/bar/./zoo", "foo/bar/zoo"},
+                                    {"foo/bar/./zoo/", "foo/bar/zoo/"},
+                                    {"./foo/bar/..", "foo/"},
+                                    {"/./foo/bar", "/foo/bar"},
+                                    {"/../foo/bar", "/foo/bar"},
+                                    {"../foo/bar/./../zoo/", "foo/zoo/"}};
 
     size_t idx = 0;
     uri::Uri uri;

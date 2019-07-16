@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-15 15:53:44
+ * @LastEditTime: 2019-07-16 10:02:46
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -248,29 +248,32 @@ std::string Uri::recompose() {
  *     A string buffer should be normalized in-place.
  */
 void Uri::normalizePath(std::string &outputBuffer) {
+    // Initialize input and output buffer.
     std::string inputBuffer = std::move(outputBuffer);
     outputBuffer.clear();
 
     while (!inputBuffer.empty()) {
-        /* DEBUG code */
-        // std::cout << "out: " << outputBuffer << " ";
-        // std::cout << "in: " << inputBuffer << std::endl;
+        // Extract path segment from input buffer.
         auto segPos = inputBuffer.find("/", 1);
-        auto seg = inputBuffer.substr(0, segPos);
+        auto seg = inputBuffer.substr(0, segPos + 1);
+        if (seg.empty())
+            seg = inputBuffer;
         // std::cout << seg << std::endl;
 
-        if (seg == "../" || seg == "./") { // 2A
-            // std::cout << "STEP 2A:" << std::endl;
+        if (seg == "../" || seg == "./") { // "Remove_dot_segments" routine 2A
+            // std::cout << "STEP 2A:" << " ";
             size_t pos = inputBuffer.find("/");
             inputBuffer.erase(0, pos + 1);
-        } else if (seg == "/." || seg == "/./") { // 2B
-            // std::cout << "STEP 2B:" << std::endl;
+        } else if (seg == "/./" ||
+                   seg == "/.") { // "Remove_dot_segments" routine 2B
+            // std::cout << "STEP 2B:" << " ";
             inputBuffer.erase(0, 2);
             if (inputBuffer.find("/") != 0) {
                 inputBuffer.insert(0, "/");
             }
-        } else if (seg == "/.." || seg == "/../") { // 2C
-            // std::cout << "STEP 2C:" << std::endl;
+        } else if (seg == "/../" ||
+                   seg == "/..") { // "Remove_dot_segments" routine 2C
+            // std::cout << "STEP 2C:" << " ";
             inputBuffer.erase(0, 3);
             if (!outputBuffer.empty()) {
                 auto pos = outputBuffer.rfind("/");
@@ -279,24 +282,30 @@ void Uri::normalizePath(std::string &outputBuffer) {
             if (inputBuffer.find("/") != 0) {
                 inputBuffer.insert(0, "/");
             }
-        } else if (seg == "." || seg == "..") { // 2D
-            // std::cout << "STEP 2D:" << std::endl;
+        } else if (seg == "." ||
+                   seg == "..") { // "Remove_dot_segments" routine 2D
+            // std::cout << "STEP 2D:" << " ";
             inputBuffer.erase(0, seg.size());
-        } else { // 2E
-            // std::cout << "STEP 2E:" << std::endl;
+        } else { // "Remove_dot_segments" routine 2E
+            // std::cout << "STEP 2E:" << " ";
+            // Output buffer should start with '/' if path is absolutely.
             if (inputBuffer.find("/") == 0) {
                 outputBuffer += "/";
                 inputBuffer.erase(0, 1);
             }
+            // Move path segment from input buffer to output buffer.
             size_t pos = 0;
             if ((pos = inputBuffer.find("/")) != std::string::npos) {
                 outputBuffer += inputBuffer.substr(0, pos);
                 inputBuffer.erase(0, pos);
-            } else {
+            } else { // only have last segment rest.
                 outputBuffer += inputBuffer;
                 inputBuffer.clear();
             }
         }
+        /* DEBUG code */
+        // std::cout << "out: " << outputBuffer << " ";
+        // std::cout << "in: " << inputBuffer << std::endl;
     }
 }
 
