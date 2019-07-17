@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-16 10:03:16
+ * @LastEditTime: 2019-07-17 11:36:13
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -285,6 +285,65 @@ TEST(UriTests, PaserFromUriWithBarelyValidAuthority) {
         ASSERT_EQ(testCase.host, uri.getHost())
             << ">>> Test is failed at " << idx << ". <<<";
         ASSERT_EQ(testCase.port, uri.getPort())
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
+}
+
+TEST(UriTests, ParseFromUriWithInvalidIPv6Addr) {
+    std::vector<std::string> uriStrings{
+        "http://[]",
+        "http://[:]",
+        "http://[I]",
+        "http://[::fFfF::1]",
+        "http://[::ffff:1.2.x.4]/",
+        "http://[::ffff:1.2.3.4.8]/",
+        "http://[::ffff:1.2.3]/",
+        "http://[::ffff:1.2.3.]/",
+        "http://[::ffff:1.2.3.256]/",
+        "http://[::fxff:1.2.3.4]/",
+        "http://[::ffff:1.2.3.-4]/",
+        "http://[::ffff:1.2.3. 4]/",
+        "http://[::ffff:1.2.3.4 ]/",
+        "http://[::ffff:1.2.3.4/",
+        "http://::ffff:1.2.3.4]/",
+        "http://::ffff:a.2.3.4]/",
+        "http://::ffff:1.a.3.4]/",
+        "http://[2001:db8:85a3:8d3:1319:8a2e:370:7348:0000]/",
+        "http://[2001:db8:85a3::8a2e:0:]/",
+        "http://[2001:db8:85a3::8a2e::]/",
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (const auto &uriString : uriStrings) {
+        ASSERT_FALSE(uri.parseFromString(uriString))
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
+}
+
+TEST(UriTests, PaserFromUriWithBarelyValidIPv6Addr) {
+    struct TestCase {
+        std::string uriString;
+        std::string host;
+    };
+
+    std::vector<TestCase> testCases{
+        {"http://[::1]/", "[::1]"},
+        {"http://[::ffff:1.2.3.4]/", "[::ffff:1.2.3.4]"},
+        {"http://[2001:db8:85a3:8d3:1319:8a2e:370:7348]/",
+         "[2001:db8:85a3:8d3:1319:8a2e:370:7348]"},
+        {"http://[fFfF::1]", "[ffff::1]"},
+        {"http://[fFfF:1:2:3:4:5:6:a]", "[ffff:1:2:3:4:5:6:a]"},
+    };
+
+    size_t idx = 0;
+    uri::Uri uri;
+    for (const auto &testCase : testCases) {
+        ASSERT_TRUE(uri.parseFromString(testCase.uriString))
+            << ">>> Test is failed at " << idx << ". <<<";
+        ASSERT_EQ(testCase.host, uri.getHost())
             << ">>> Test is failed at " << idx << ". <<<";
         ++idx;
     }
