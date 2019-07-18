@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-17 11:36:13
+ * @LastEditTime: 2019-07-18 11:16:32
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -424,7 +424,8 @@ TEST(UriTests, PaserFromUriWithBarelyValidQuery) {
         std::string query;
     };
 
-    std::vector<TestCase> testCases{{"foo://example.com/bar?zoo", "zoo"},
+    std::vector<TestCase> testCases{{"foo://example.com/bar?", ""},
+                                    {"foo://example.com/bar?zoo", "zoo"},
                                     {"foo://example.com/bar?0zoo", "0zoo"},
                                     {"foo://example.com/bar?-zoo", "-zoo"},
                                     {"foo://example.com/bar?.zoo", ".zoo"},
@@ -480,6 +481,7 @@ TEST(UriTests, PaserFromUriWithBarelyValidFragment) {
     };
 
     std::vector<TestCase> testCases{
+        {"foo://example.com/bar#", ""},
         {"foo://example.com/bar#zoo", "zoo"},
         {"foo://example.com/bar#0zoo", "0zoo"},
         {"foo://example.com/bar#-zoo", "-zoo"},
