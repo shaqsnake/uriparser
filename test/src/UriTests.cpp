@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-18 11:16:32
+ * @LastEditTime: 2019-07-18 11:34:04
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -647,6 +647,7 @@ TEST(UriTests, ProduceToUriStrings) {
             << ">>> Test is failed at " << idx << ". <<<";
         ASSERT_EQ(testCase.targetUriString, uri.produceToString())
             << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
     }
 }
 
