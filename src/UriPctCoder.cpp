@@ -1,9 +1,9 @@
-// Copyright (c) 2019 shaqsnake. All rights decodedUriStringerved.
+// Copyright (c) 2019 shaqsnake. All rights reserved.
 /**
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-07-10 10:47:34
- * @LastEditTime: 2019-07-11 14:13:15
+ * @LastEditTime: 2019-07-19 14:12:13
  * @Description:
  */
 #include "UriPctCoder.hpp"
@@ -19,6 +19,8 @@ struct UriPctCoder::Impl {
     //                         '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
     //                         'a', 'b', 'c', 'd', 'e', 'f'};
     std::string hex = "0123456789ABCDEF";
+
+    unsigned char hexval(unsigned char c);
 };
 
 /**
@@ -56,7 +58,7 @@ std::string UriPctCoder::decode(const std::string &inputUriString) {
             // Ready to decode.
             if (hexdigString.size() == 3) {
                 decodedUriString +=
-                    (hexval(hexdigString[1]) << 4) + hexval(hexdigString[2]);
+                    (impl_->hexval(hexdigString[1]) << 4) + impl_->hexval(hexdigString[2]);
                 decodeMode = false;
                 hexdigString.clear();
             }
@@ -109,7 +111,7 @@ std::string UriPctCoder::encode(const std::string &inputUriString) {
  * @return:
  *     An ascii character.
  */
-u_char UriPctCoder::hexval(u_char c) {
+u_char UriPctCoder::Impl::hexval(u_char c) {
     if ('0' <= c && c <= '9')
         return c - '0';
     else if ('a' <= c && c <= 'f')

@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-07-10 10:47:27
- * @LastEditTime: 2019-07-11 14:02:42
+ * @LastEditTime: 2019-07-19 14:10:51
  * @Description:
  */
 
@@ -38,8 +38,6 @@ public:
 private:
     struct Impl;
     std::unique_ptr<struct Impl> impl_;
-
-    unsigned char hexval(unsigned char c);
 };
 
 } // namespace uri
