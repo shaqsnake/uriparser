@@ -34,7 +34,7 @@ public:
 
 public:
     bool parseFromString(const std::string &uriString);
-    std::string produceToString();
+    std::string produceToString(bool encode=true);
     std::string &getScheme() const;
     std::string &getAuthority() const;
     std::string &getUserinfo() const;

@@ -116,9 +116,13 @@ bool Uri::parseFromString(const std::string &uriString) {
  * @return:
  *     Encoded URI string.
  */
-std::string Uri::produceToString() {
-    UriPctCoder uriPctCoder;
-    return uriPctCoder.encode(recompose());
+std::string Uri::produceToString(bool encode) {
+    if (encode) {
+        UriPctCoder uriPctCoder;
+        return uriPctCoder.encode(recompose());
+    }
+
+    return recompose();
 }
 
 /**
