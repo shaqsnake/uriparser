@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-16 11:25:16
+ * @LastEditTime: 2019-07-22 17:40:18
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -189,6 +189,7 @@ std::string &Uri::getQuery() const { return impl_->query; }
  */
 std::string &Uri::getFragment() const { return impl_->fragment; }
 
+
 // Private methods
 /**
  * @description:
@@ -307,6 +308,70 @@ void movePathSegment(std::string &inputBuffer, std::string &outputBuffer) {
         outputBuffer += inputBuffer;
         inputBuffer.clear();
     }
+}
+
+
+/**
+ * @description:
+ *     Merge relative path into base path, remove segments of base path
+ *     if necessary, and add leading slash '/' character if bash path is empty.
+ * @param[in] basePath
+ *     The base path to be merged.
+ * @param[in] relPath
+ *     The relative path to merge.
+ * @return: 
+ *     The merged string of two pathes.
+ */
+std::string mergePath(const std::string &basePath, const std::string &relPath) {
+    if (basePath == "") {
+        return "/" + relPath;
+    }
+    std::string targetPath = std::move(basePath);
+    removeLastPathSegment(targetPath);
+    return targetPath + "/" + relPath;
+}
+
+/**
+ * @description:
+ *     Resovle a relative Uri referece by following "Transform References"
+ *     procedure of RFC 3986.
+ * @param[in] A relative Uri string.
+ */
+void Uri::resolve(const std::string &relativeRef) {
+    Uri relUri;
+    relUri.parseFromString(relativeRef);
+    // std::cout << relUri.getPath() << std::endl;
+    if (!relUri.getScheme().empty()) {
+        impl_->scheme = relUri.getScheme();
+        impl_->authority = relUri.getAuthority();
+        impl_->path = relUri.getPath();
+        impl_->query = relUri.getQuery();
+    } else {
+        if (!relUri.getAuthority().empty()) {
+            impl_->authority = relUri.getAuthority();
+            impl_->path = relUri.getPath();
+            // normalizePath(impl_->path);
+            impl_->query = relUri.getQuery();
+        } else {
+            if (relUri.getPath() == "") {
+                if (!relUri.getQuery().empty()) {
+                    impl_->query = relUri.getQuery();
+                }
+            } else {
+                if (relUri.getPath().find("/") == 0) {
+                    impl_->path = relUri.getPath();
+                } else {
+                    impl_->path = mergePath(impl_->path, relUri.getPath());
+                    normalizePath(impl_->path);
+                }
+                impl_->query = relUri.getQuery();
+            }
+            // impl_->authority = relUri.getAuthority();
+        }
+        // impl_->scheme = relUri.getScheme();
+    }
+
+    impl_->fragment = relUri.getFragment();
 }
 
 /**
