@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 11:09:54
+ * @LastEditTime: 2019-07-23 15:54:44
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -236,7 +236,7 @@ void Uri::setFragment(const std::string &fragment) {
  * @description:
  *     Normalize path component by "remove_dot_segments" routine.
  */
-void Uri::normalizePath() { removeDotSegments(impl_->path); }
+void Uri::normalizePath() { impl_->path = removeDotSegments(impl_->path); }
 
 // Private methods
 /**
@@ -396,8 +396,7 @@ void Uri::resolve(const std::string &relativeRef) {
     } else {
         if (!relUri.getAuthority().empty()) {
             impl_->authority = relUri.getAuthority();
-            removeDotSegments(relUri.getPath());
-            impl_->path = relUri.getPath();
+            impl_->path = removeDotSegments(relUri.getPath());
             impl_->query = relUri.getQuery();
         } else {
             if (relUri.getPath() == "") {
@@ -406,11 +405,10 @@ void Uri::resolve(const std::string &relativeRef) {
                 }
             } else {
                 if (relUri.getPath().find("/") == 0) {
-                    removeDotSegments(relUri.getPath());
-                    impl_->path = relUri.getPath();
+                    impl_->path = removeDotSegments(relUri.getPath());
                 } else {
                     impl_->path = mergePath(impl_->path, relUri.getPath());
-                    removeDotSegments(impl_->path);
+                    impl_->path = removeDotSegments(impl_->path);
                 }
                 impl_->query = relUri.getQuery();
             }
@@ -427,13 +425,14 @@ void Uri::resolve(const std::string &relativeRef) {
  *     Remove dot segments of input path
  *     which is interpreting and removing the special "." and ".."
  *     complete path segments from a referenced path.
- * @param[in|out] outputBuffer
- *     A string buffer should be removed dot segments in-place.
+ * @param[in] inputBuffer
+ *     A path string should be removed dot segments.
+ * @return:
+ *     A path string is removed dot segments.
  */
-void Uri::removeDotSegments(std::string &outputBuffer) {
+std::string Uri::removeDotSegments(std::string &inputBuffer) {
     // Initialize input and output buffer.
-    std::string inputBuffer = std::move(outputBuffer);
-    outputBuffer.clear();
+    std::string outputBuffer;
 
     while (!inputBuffer.empty()) {
         // Extract path segment from input buffer.
@@ -470,6 +469,8 @@ void Uri::removeDotSegments(std::string &outputBuffer) {
         // std::cout << "out: " << outputBuffer << " ";
         // std::cout << "in: " << inputBuffer << std::endl;
     }
+
+    return outputBuffer;
 }
 
 } // namespace uri

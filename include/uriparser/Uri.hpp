@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 11:14:43
+ * @LastEditTime: 2019-07-23 15:45:04
  * @Description: A declaration of class uri::Uri.
  */
 #ifndef URIPARSER_URI_HPP
@@ -58,8 +58,7 @@ private:
 
     void parseAuthority();
     std::string recompose();
-    // TODO: Refactor to std::string removeDotSegments(std::string &outputBuffer);
-    void removeDotSegments(std::string &outputBuffer);
+    std::string removeDotSegments(std::string &inputBuffer);
 };
 
 } // namespace uri
