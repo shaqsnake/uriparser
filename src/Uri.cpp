@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 10:22:47
+ * @LastEditTime: 2019-07-23 11:09:54
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -396,8 +396,8 @@ void Uri::resolve(const std::string &relativeRef) {
     } else {
         if (!relUri.getAuthority().empty()) {
             impl_->authority = relUri.getAuthority();
+            removeDotSegments(relUri.getPath());
             impl_->path = relUri.getPath();
-            removeDotSegments(impl_->path);
             impl_->query = relUri.getQuery();
         } else {
             if (relUri.getPath() == "") {
@@ -406,6 +406,7 @@ void Uri::resolve(const std::string &relativeRef) {
                 }
             } else {
                 if (relUri.getPath().find("/") == 0) {
+                    removeDotSegments(relUri.getPath());
                     impl_->path = relUri.getPath();
                 } else {
                     impl_->path = mergePath(impl_->path, relUri.getPath());
