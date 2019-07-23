@@ -58,7 +58,7 @@ private:
 
     void parseAuthority();
     std::string recompose();
-    std::string removeDotSegments(std::string &inputBuffer);
+    std::string removeDotSegments(std::string inputBuffer);
 };
 
 } // namespace uri

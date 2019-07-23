@@ -430,7 +430,7 @@ void Uri::resolve(const std::string &relativeRef) {
  * @return:
  *     A path string is removed dot segments.
  */
-std::string Uri::removeDotSegments(std::string &inputBuffer) {
+std::string Uri::removeDotSegments(std::string inputBuffer) {
     // Initialize input and output buffer.
     std::string outputBuffer;
 
