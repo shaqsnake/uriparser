@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 09:59:33
+ * @LastEditTime: 2019-07-23 10:22:47
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -188,14 +188,55 @@ std::string &Uri::getQuery() const { return impl_->query; }
  */
 std::string &Uri::getFragment() const { return impl_->fragment; }
 
+/**
+ * @description:
+ *     Set the scheme of URI which is defined in RFC3986.
+ * @param[in] scheme
+ *     A scheme string to be set.
+ */
+void Uri::setScheme(const std::string &scheme) { impl_->scheme = scheme; }
+
+/**
+ * @description:
+ *     Set the authority of URI which is defined in RFC3986.
+ * @param[in] authority
+ *     A authority string to be set.
+ */
+void Uri::setAuthority(const std::string &authority) {
+    impl_->authority = authority;
+}
+
+/**
+ * @description:
+ *     Set the path of URI which is defined in RFC3986.
+ * @param[in] path
+ *     A path string to be set.
+ */
+void Uri::setPath(const std::string &path) { impl_->path = path; }
+
+/**
+ * @description:
+ *     Set the query of URI which is defined in RFC3986.
+ * @param[in] query
+ *     A query string to be set.
+ */
+void Uri::setQuery(const std::string &query) { impl_->query = query; }
+
+/**
+ * @description:
+ *     Set the fragment of URI which is defined in RFC3986.
+ * @param[in] fragment
+ *     A fragment string to be set.
+ */
+void Uri::setFragment(const std::string &fragment) {
+    impl_->fragment = fragment;
+}
 
 /**
  * @description:
  *     Normalize path component by "remove_dot_segments" routine.
  */
-void Uri::normalizePath() {
-    removeDotSegments(impl_->path);
-}
+void Uri::normalizePath() { removeDotSegments(impl_->path); }
 
 // Private methods
 /**
@@ -317,7 +358,6 @@ void movePathSegment(std::string &inputBuffer, std::string &outputBuffer) {
     }
 }
 
-
 /**
  * @description:
  *     Merge relative path into base path, remove segments of base path
@@ -326,7 +366,7 @@ void movePathSegment(std::string &inputBuffer, std::string &outputBuffer) {
  *     The base path to be merged.
  * @param[in] relPath
  *     The relative path to merge.
- * @return: 
+ * @return:
  *     The merged string of two pathes.
  */
 std::string mergePath(const std::string &basePath, const std::string &relPath) {

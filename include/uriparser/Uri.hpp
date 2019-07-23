@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 09:37:28
+ * @LastEditTime: 2019-07-23 10:07:21
  * @Description: A declaration of class uri::Uri.
  */
 #ifndef URIPARSER_URI_HPP
@@ -43,6 +43,11 @@ public:
     std::string &getPath() const;
     std::string &getQuery() const;
     std::string &getFragment() const;
+    void setScheme(const std::string &scheme);
+    void setAuthority(const std::string &authority);
+    void setPath(const std::string &path);
+    void setQuery(const std::string &query);
+    void setFragment(const std::string &fragment);
     void normalizePath();
     // TODO: Refactor to Uri resolve(const Uri& relativeRef) const;
     void resolve(const std::string &relativeRef);

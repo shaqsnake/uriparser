@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 09:40:08
+ * @LastEditTime: 2019-07-23 10:23:01
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -740,7 +740,7 @@ TEST(UriTests, ResolveRelativeUriString) {
         {"http://a/b/c/d;p?q", ";x", "http://a/b/c/;x"},
         {"http://a/b/c/d;p?q", "g;x", "http://a/b/c/g;x"},
         {"http://a/b/c/d;p?q", "g;x?y#s", "http://a/b/c/g;x?y#s"},
-        {"http://a/b/c/d;p?q", ""  , "http://a/b/c/d;p?q"},
+        {"http://a/b/c/d;p?q", "", "http://a/b/c/d;p?q"},
         // {"http://a/b/c/d;p?q", "." , "http://a/b/c/"},
         // {"http://a/b/c/d;p?q", "./", "http://a/b/c/"},
         // {"http://a/b/c/d;p?q", "..", "http://a/b/"},
@@ -759,5 +759,37 @@ TEST(UriTests, ResolveRelativeUriString) {
         ASSERT_EQ(testCase.targetUri, uri.produceToString(false))
             << ">>> Test is failed at " << idx << ". <<<";
         ++idx;
+    }
+}
+
+TEST(UriTests, SetUriComponents) {
+    struct TestCase {
+        std::string scheme;
+        std::string authority;
+        std::string path;
+        std::string query;
+        std::string fragment;
+        std::string expectedUri;
+    };
+
+    std::vector<TestCase> testCases{
+        {"http", "example.com", "/foo", "bar", "spam",
+         "http://example.com/foo?bar#spam"},
+        {"", "example.com", "/foo", "bar", "spam",
+         "//example.com/foo?bar#spam"},
+        {"http", "", "/foo", "bar", "spam", "http:/foo?bar#spam"},
+        {"http", "example.com", "", "bar", "spam",
+         "http://example.com?bar#spam"},
+        {"http", "example.com", "/foo", "", "", "http://example.com/foo"},
+    };
+
+    for (auto const &testCase : testCases) {
+        uri::Uri uri;
+        uri.setScheme(testCase.scheme);
+        uri.setAuthority(testCase.authority);
+        uri.setPath(testCase.path);
+        uri.setQuery(testCase.query);
+        uri.setFragment(testCase.fragment);
+        ASSERT_EQ(testCase.expectedUri, uri.produceToString(false));
     }
 }
