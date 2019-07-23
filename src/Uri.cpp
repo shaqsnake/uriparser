@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 09:41:27
+ * @LastEditTime: 2019-07-23 09:59:33
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -188,6 +188,11 @@ std::string &Uri::getQuery() const { return impl_->query; }
  */
 std::string &Uri::getFragment() const { return impl_->fragment; }
 
+
+/**
+ * @description:
+ *     Normalize path component by "remove_dot_segments" routine.
+ */
 void Uri::normalizePath() {
     removeDotSegments(impl_->path);
 }
@@ -378,11 +383,11 @@ void Uri::resolve(const std::string &relativeRef) {
 
 /**
  * @description:
- *     Normalize path component by "remove_dot_segments" routine
+ *     Remove dot segments of input path
  *     which is interpreting and removing the special "." and ".."
  *     complete path segments from a referenced path.
  * @param[in|out] outputBuffer
- *     A string buffer should be normalized in-place.
+ *     A string buffer should be removed dot segments in-place.
  */
 void Uri::removeDotSegments(std::string &outputBuffer) {
     // Initialize input and output buffer.
