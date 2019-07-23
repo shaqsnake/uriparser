@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 16:54:28
+ * @LastEditTime: 2019-07-23 17:03:36
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -144,7 +144,7 @@ std::string Uri::produceToString(bool encode) {
  * @return:
  *     A scheme string.
  */
-std::string &Uri::getScheme() const { return impl_->scheme; }
+std::string Uri::getScheme() const { return impl_->scheme; }
 
 /**
  * @description:
@@ -152,7 +152,7 @@ std::string &Uri::getScheme() const { return impl_->scheme; }
  * @return:
  *     A authority string.
  */
-std::string &Uri::getAuthority() const { return impl_->authority; }
+std::string Uri::getAuthority() const { return impl_->authority; }
 
 /**
  * @description:
@@ -160,7 +160,7 @@ std::string &Uri::getAuthority() const { return impl_->authority; }
  * @return:
  *      A userinfo string.
  */
-std::string &Uri::getUserinfo() const { return impl_->userinfo; }
+std::string Uri::getUserinfo() const { return impl_->userinfo; }
 
 /**
  * @description:
@@ -168,7 +168,7 @@ std::string &Uri::getUserinfo() const { return impl_->userinfo; }
  * @return:
  *     A host string.
  */
-std::string &Uri::getHost() const { return impl_->host; }
+std::string Uri::getHost() const { return impl_->host; }
 
 /**
  * @description:
@@ -176,7 +176,7 @@ std::string &Uri::getHost() const { return impl_->host; }
  * @return:
  *     A port number which should be from 1 to 65,535.
  */
-int &Uri::getPort() const { return impl_->port; }
+int Uri::getPort() const { return impl_->port; }
 
 /**
  * @description:
@@ -184,7 +184,7 @@ int &Uri::getPort() const { return impl_->port; }
  * @return:
  *     A path string.
  */
-std::string &Uri::getPath() const { return impl_->path; }
+std::string Uri::getPath() const { return impl_->path; }
 
 /**
  * @description:
@@ -192,7 +192,7 @@ std::string &Uri::getPath() const { return impl_->path; }
  * @return:
  *     A query string.
  */
-std::string &Uri::getQuery() const { return impl_->query; }
+std::string Uri::getQuery() const { return impl_->query; }
 
 /**
  * @description:
@@ -200,7 +200,7 @@ std::string &Uri::getQuery() const { return impl_->query; }
  * @return:
  *     A fragment string.
  */
-std::string &Uri::getFragment() const { return impl_->fragment; }
+std::string Uri::getFragment() const { return impl_->fragment; }
 
 /**
  * @description:

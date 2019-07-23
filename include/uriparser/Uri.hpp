@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 16:54:17
+ * @LastEditTime: 2019-07-23 17:03:03
  * @Description: A declaration of class uri::Uri.
  */
 #ifndef URIPARSER_URI_HPP
@@ -35,14 +35,14 @@ public:
 public:
     bool parseFromString(const std::string &uriString);
     std::string produceToString(bool encode = true);
-    std::string &getScheme() const;
-    std::string &getAuthority() const;
-    std::string &getUserinfo() const;
-    std::string &getHost() const;
-    int &getPort() const;
-    std::string &getPath() const;
-    std::string &getQuery() const;
-    std::string &getFragment() const;
+    std::string getScheme() const;
+    std::string getAuthority() const;
+    std::string getUserinfo() const;
+    std::string getHost() const;
+    int getPort() const;
+    std::string getPath() const;
+    std::string getQuery() const;
+    std::string getFragment() const;
     void setScheme(const std::string &scheme);
     void setAuthority(const std::string &authority);
     void setPath(const std::string &path);
