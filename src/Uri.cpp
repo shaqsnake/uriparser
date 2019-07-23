@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 15:54:44
+ * @LastEditTime: 2019-07-23 16:54:28
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -49,14 +49,28 @@ struct Uri::Impl {
 };
 
 /**
- * Constructor by default.
+ * @description:
+ *     Constructor by default.
  */
 Uri::Uri() : impl_(new Impl) {}
 
 /**
- * Destructor.
+ * @description:
+ *     Destructor.
  */
-Uri::~Uri() = default;
+Uri::~Uri() noexcept = default;
+
+Uri::Uri(Uri &&) = default;
+
+Uri &Uri::operator=(const Uri &other) {
+    if (this != &other) {
+        *impl_ = *other.impl_;
+    }
+
+    return *this;
+}
+
+Uri &Uri::operator=(Uri &&) = default;
 
 // Public methods
 /**
@@ -384,40 +398,43 @@ std::string mergePath(const std::string &basePath, const std::string &relPath) {
  *     procedure of RFC 3986.
  * @param[in] A relative Uri string.
  */
-void Uri::resolve(const std::string &relativeRef) {
-    Uri relUri;
-    relUri.parseFromString(relativeRef);
+Uri Uri::resolve(const Uri &relUri) {
+    uri::Uri targetUri;
     // std::cout << relUri.getPath() << std::endl;
     if (!relUri.getScheme().empty()) {
-        impl_->scheme = relUri.getScheme();
-        impl_->authority = relUri.getAuthority();
-        impl_->path = relUri.getPath();
-        impl_->query = relUri.getQuery();
+        targetUri.setScheme(relUri.getScheme());
+        targetUri.setAuthority(relUri.getAuthority());
+        targetUri.setPath(relUri.getPath());
+        targetUri.setQuery(relUri.getQuery());
     } else {
         if (!relUri.getAuthority().empty()) {
-            impl_->authority = relUri.getAuthority();
-            impl_->path = removeDotSegments(relUri.getPath());
-            impl_->query = relUri.getQuery();
+            targetUri.setAuthority(relUri.getAuthority());
+            targetUri.setPath(removeDotSegments(relUri.getPath()));
+            targetUri.setQuery(relUri.getQuery());
         } else {
             if (relUri.getPath() == "") {
+                targetUri.setPath(impl_->path);
                 if (!relUri.getQuery().empty()) {
-                    impl_->query = relUri.getQuery();
+                    targetUri.setQuery(relUri.getQuery());
+                } else {
+                    targetUri.setQuery(impl_->query);
                 }
             } else {
                 if (relUri.getPath().find("/") == 0) {
-                    impl_->path = removeDotSegments(relUri.getPath());
+                    targetUri.setPath(removeDotSegments(relUri.getPath()));
                 } else {
-                    impl_->path = mergePath(impl_->path, relUri.getPath());
-                    impl_->path = removeDotSegments(impl_->path);
+                    targetUri.setPath(mergePath(impl_->path, relUri.getPath()));
+                    targetUri.setPath(removeDotSegments(targetUri.getPath()));
                 }
-                impl_->query = relUri.getQuery();
+                targetUri.setQuery(relUri.getQuery());
             }
-            // impl_->authority = relUri.getAuthority();
+            targetUri.setAuthority(impl_->authority);
         }
-        // impl_->scheme = relUri.getScheme();
+        targetUri.setScheme(impl_->scheme);
     }
+    targetUri.setFragment(relUri.getFragment());
 
-    impl_->fragment = relUri.getFragment();
+    return targetUri;
 }
 
 /**

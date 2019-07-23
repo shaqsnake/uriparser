@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 11:10:53
+ * @LastEditTime: 2019-07-23 16:53:06
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -720,9 +720,9 @@ TEST(UriTests, ParseFromUriWithNomalizePath) {
 TEST(UriTests, ResolveRelativeUriString) {
 
     struct TestCase {
-        std::string baseUri;
-        std::string relativeRef;
-        std::string targetUri;
+        std::string baseUriString;
+        std::string relativeRefString;
+        std::string expectedUriString;
     };
 
     std::vector<TestCase> testCases{
@@ -742,7 +742,7 @@ TEST(UriTests, ResolveRelativeUriString) {
         {"http://a/b/c/d;p?q", "g;x", "http://a/b/c/g;x"},
         {"http://a/b/c/d;p?q", "g;x?y#s", "http://a/b/c/g;x?y#s"},
         {"http://a/b/c/d;p?q", "", "http://a/b/c/d;p?q"},
-        {"http://a/b/c/d;p?q", "." , "http://a/b/c/"},
+        {"http://a/b/c/d;p?q", ".", "http://a/b/c/"},
         {"http://a/b/c/d;p?q", "./", "http://a/b/c/"},
         {"http://a/b/c/d;p?q", "..", "http://a/b/"},
         {"http://a/b/c/d;p?q", "../", "http://a/b/"},
@@ -755,29 +755,30 @@ TEST(UriTests, ResolveRelativeUriString) {
         {"http://a/b/c/d;p?q", "../../../../g", "http://a/g"},
         {"http://a/b/c/d;p?q", "/./g", "http://a/g"},
         {"http://a/b/c/d;p?q", "/../g", "http://a/g"},
-        {"http://a/b/c/d;p?q", "g."  , "http://a/b/c/g."},
-        {"http://a/b/c/d;p?q", ".g"  , "http://a/b/c/.g"},
-        {"http://a/b/c/d;p?q", "g.." , "http://a/b/c/g.."},
-        {"http://a/b/c/d;p?q", "..g" , "http://a/b/c/..g"},
+        {"http://a/b/c/d;p?q", "g.", "http://a/b/c/g."},
+        {"http://a/b/c/d;p?q", ".g", "http://a/b/c/.g"},
+        {"http://a/b/c/d;p?q", "g..", "http://a/b/c/g.."},
+        {"http://a/b/c/d;p?q", "..g", "http://a/b/c/..g"},
         {"http://a/b/c/d;p?q", "./../g", "http://a/b/g"},
-        {"http://a/b/c/d;p?q", "./g/." , "http://a/b/c/g/"},
-        {"http://a/b/c/d;p?q", "g/./h" , "http://a/b/c/g/h"},
+        {"http://a/b/c/d;p?q", "./g/.", "http://a/b/c/g/"},
+        {"http://a/b/c/d;p?q", "g/./h", "http://a/b/c/g/h"},
         {"http://a/b/c/d;p?q", "g/../h", "http://a/b/c/h"},
         {"http://a/b/c/d;p?q", "g;x=1/./y", "http://a/b/c/g;x=1/y"},
         {"http://a/b/c/d;p?q", "g;x=1/../y", "http://a/b/c/y"},
-        {"http://a/b/c/d;p?q", "g?y/./x"  , "http://a/b/c/g?y/./x"},
-        {"http://a/b/c/d;p?q", "g?y/../x" , "http://a/b/c/g?y/../x"},
-        {"http://a/b/c/d;p?q", "g#s/./x"  , "http://a/b/c/g#s/./x"},
-        {"http://a/b/c/d;p?q", "g#s/../x" , "http://a/b/c/g#s/../x"},
+        {"http://a/b/c/d;p?q", "g?y/./x", "http://a/b/c/g?y/./x"},
+        {"http://a/b/c/d;p?q", "g?y/../x", "http://a/b/c/g?y/../x"},
+        {"http://a/b/c/d;p?q", "g#s/./x", "http://a/b/c/g#s/./x"},
+        {"http://a/b/c/d;p?q", "g#s/../x", "http://a/b/c/g#s/../x"},
         {"http://a/b/c/d;p?q", "http:g", "http:g"},
     };
 
     size_t idx = 0;
-    uri::Uri uri;
     for (const auto &testCase : testCases) {
-        ASSERT_TRUE(uri.parseFromString(testCase.baseUri));
-        uri.resolve(testCase.relativeRef);
-        ASSERT_EQ(testCase.targetUri, uri.produceToString(false))
+        uri::Uri baseUri, relRefUri, targetUri;
+        ASSERT_TRUE(baseUri.parseFromString(testCase.baseUriString));
+        ASSERT_TRUE(relRefUri.parseFromString(testCase.relativeRefString));
+        targetUri = baseUri.resolve(relRefUri);
+        ASSERT_EQ(testCase.expectedUriString, targetUri.produceToString(false))
             << ">>> Test is failed at " << idx << ". <<<";
         ++idx;
     }

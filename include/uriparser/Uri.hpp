@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 15:45:04
+ * @LastEditTime: 2019-07-23 16:54:17
  * @Description: A declaration of class uri::Uri.
  */
 #ifndef URIPARSER_URI_HPP
@@ -28,13 +28,13 @@ public:
     Uri();
     ~Uri();
     Uri(const Uri &) = delete;
-    Uri(Uri &&) = delete;
-    Uri &operator=(const Uri &) = delete;
-    Uri &operator=(Uri &&) = delete;
+    Uri(Uri &&);
+    Uri &operator=(const Uri &);
+    Uri &operator=(Uri &&);
 
 public:
     bool parseFromString(const std::string &uriString);
-    std::string produceToString(bool encode=true);
+    std::string produceToString(bool encode = true);
     std::string &getScheme() const;
     std::string &getAuthority() const;
     std::string &getUserinfo() const;
@@ -49,8 +49,7 @@ public:
     void setQuery(const std::string &query);
     void setFragment(const std::string &fragment);
     void normalizePath();
-    // TODO: Refactor to Uri resolve(const Uri& relativeRef) const;
-    void resolve(const std::string &relativeRef);
+    Uri resolve(const Uri &relativeRef);
 
 private:
     struct Impl;
