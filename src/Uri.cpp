@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-22 17:40:18
+ * @LastEditTime: 2019-07-23 09:41:27
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"
@@ -95,7 +95,6 @@ bool Uri::parseFromString(const std::string &uriString) {
         impl_->path = uriPctCoder.decode(m[5].str()); // path
         if (!impl_->path.empty() && !isValid(impl_->path, PathPattern))
             return false;
-        normalizePath(impl_->path);
         impl_->query = uriPctCoder.decode(m[7].str()); // query
         if (!impl_->query.empty() && !isValid(impl_->query, QueryPattern))
             return false;
@@ -189,6 +188,9 @@ std::string &Uri::getQuery() const { return impl_->query; }
  */
 std::string &Uri::getFragment() const { return impl_->fragment; }
 
+void Uri::normalizePath() {
+    removeDotSegments(impl_->path);
+}
 
 // Private methods
 /**
@@ -350,7 +352,7 @@ void Uri::resolve(const std::string &relativeRef) {
         if (!relUri.getAuthority().empty()) {
             impl_->authority = relUri.getAuthority();
             impl_->path = relUri.getPath();
-            // normalizePath(impl_->path);
+            removeDotSegments(impl_->path);
             impl_->query = relUri.getQuery();
         } else {
             if (relUri.getPath() == "") {
@@ -362,7 +364,7 @@ void Uri::resolve(const std::string &relativeRef) {
                     impl_->path = relUri.getPath();
                 } else {
                     impl_->path = mergePath(impl_->path, relUri.getPath());
-                    normalizePath(impl_->path);
+                    removeDotSegments(impl_->path);
                 }
                 impl_->query = relUri.getQuery();
             }
@@ -382,7 +384,7 @@ void Uri::resolve(const std::string &relativeRef) {
  * @param[in|out] outputBuffer
  *     A string buffer should be normalized in-place.
  */
-void Uri::normalizePath(std::string &outputBuffer) {
+void Uri::removeDotSegments(std::string &outputBuffer) {
     // Initialize input and output buffer.
     std::string inputBuffer = std::move(outputBuffer);
     outputBuffer.clear();

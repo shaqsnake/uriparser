@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-22 17:27:15
+ * @LastEditTime: 2019-07-23 09:40:08
  * @Description: A unittest of class uri::Uri.
  */
 #include <gtest/gtest.h>
@@ -710,6 +710,7 @@ TEST(UriTests, ParseFromUriWithNomalizePath) {
     for (const auto &testCase : testCases) {
         ASSERT_TRUE(uri.parseFromString(testCase.uriString))
             << ">>> Test is failed at " << idx << ". <<<";
+        uri.normalizePath();
         ASSERT_EQ(testCase.path, uri.getPath())
             << ">>> Test is failed at " << idx << ". <<<";
         ++idx;

@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-22 17:41:57
+ * @LastEditTime: 2019-07-23 09:37:28
  * @Description: A declaration of class uri::Uri.
  */
 #ifndef URIPARSER_URI_HPP
@@ -43,6 +43,7 @@ public:
     std::string &getPath() const;
     std::string &getQuery() const;
     std::string &getFragment() const;
+    void normalizePath();
     // TODO: Refactor to Uri resolve(const Uri& relativeRef) const;
     void resolve(const std::string &relativeRef);
 
@@ -52,8 +53,7 @@ private:
 
     void parseAuthority();
     std::string recompose();
-    // TODO: Refactor to void normalizePath(), and move it to public.
-    void normalizePath(std::string &outputBuffer);
+    void removeDotSegments(std::string &outputBuffer);
 };
 
 } // namespace uri
