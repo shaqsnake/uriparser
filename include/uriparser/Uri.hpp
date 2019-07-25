@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 17:03:03
+ * @LastEditTime: 2019-07-25 11:12:21
  * @Description: A declaration of class uri::Uri.
  */
 #ifndef URIPARSER_URI_HPP

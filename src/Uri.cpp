@@ -3,7 +3,7 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 17:03:36
+ * @LastEditTime: 2019-07-25 11:12:15
  * @Description: An implementation of class uri::Uri.
  */
 #include "UriPattern.hpp"

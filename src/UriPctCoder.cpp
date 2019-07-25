@@ -3,12 +3,12 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-07-10 10:47:34
- * @LastEditTime: 2019-07-25 14:48:00
+ * @LastEditTime: 2019-07-25 15:14:12
  * @Description:
  */
 #include "UriPctCoder.hpp"
-#include <set>
 #include <iostream>
+#include <set>
 
 namespace uri {
 
@@ -58,8 +58,8 @@ std::string UriPctCoder::decode(const std::string &inputUriString) const {
             }
             // Ready to decode.
             if (hexdigString.size() == 3) {
-                decodedUriString +=
-                    (impl_->hexval(hexdigString[1]) << 4) + impl_->hexval(hexdigString[2]);
+                decodedUriString += (impl_->hexval(hexdigString[1]) << 4) +
+                                    impl_->hexval(hexdigString[2]);
                 decodeMode = false;
                 hexdigString.clear();
             }
@@ -87,7 +87,7 @@ std::string UriPctCoder::decode(const std::string &inputUriString) const {
  */
 std::string UriPctCoder::encode(const std::string &inputUriString) const {
     std::string targetUriString = "";
-    
+
     for (const auto &c : inputUriString) {
         // Unreserved character.
         if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||

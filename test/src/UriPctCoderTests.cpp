@@ -39,3 +39,25 @@ TEST(UriPctCoderTests, EncodeNotUnreservedCharater) {
         ++idx;
     }
 }
+
+TEST(UriPctCoderTests, DecodeHexdigToAsiicCharater) {
+    struct TestCase {
+        std::string inputPctHexdig;
+        std::string expectedCharaters;
+    };
+
+    std::vector<TestCase> testCases{
+        {"%41%", "A"}, {"%41%42%43", "ABC"}, {"%20", " "},
+        {"%61", "a"},  {"%41%62%63", "Abc"}, {"%5F%7E%2E%2D", "_~.-"},
+        {"%40", "@"},
+    };
+
+    uri::UriPctCoder pctCoder;
+    size_t idx = 0;
+    for (const auto &testCase : testCases) {
+        auto targetCharacters = pctCoder.decode(testCase.inputPctHexdig);
+        ASSERT_EQ(testCase.expectedCharaters, targetCharacters)
+            << ">>> Test is failed at " << idx << ". <<<";
+        ++idx;
+    }
+}
