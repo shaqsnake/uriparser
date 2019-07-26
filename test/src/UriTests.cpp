@@ -3,8 +3,8 @@
  * @Author: shaqsnake
  * @Email: shaqsnake@gmail.com
  * @Date: 2019-06-27 09:17:12
- * @LastEditTime: 2019-07-23 16:53:06
- * @Description: A unittest of class uri::Uri.
+ * @LastEditTime: 2019-07-26 11:28:36
+ * @Description: Unittests of class uri::Uri.
  */
 #include <gtest/gtest.h>
 #include <uriparser/Uri.hpp>
